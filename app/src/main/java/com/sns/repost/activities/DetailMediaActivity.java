@@ -87,7 +87,12 @@ public class DetailMediaActivity extends BaseActivity {
         setContentView(R.layout.activity_detail_media);
         ButterKnife.bind(this);
         media = Utils.getMediaBundle(getIntent().getStringExtra(Consts.PARAM_MEDIA));
+        initView();
         loadData();
+    }
+
+    private void initView() {
+        viewSpace.setVisibility(View.INVISIBLE);
     }
 
     private void loadData() {
