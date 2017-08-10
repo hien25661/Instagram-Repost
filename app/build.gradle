@@ -1,0 +1,90 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 25
+    buildToolsVersion "25.0.2"
+    defaultConfig {
+        minSdkVersion 15
+        targetSdkVersion 25
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+        multiDexEnabled true
+
+//        buildConfigField "String", "CHAO_BASE_URL", '"https://dev-tracking.korecow.jp:8449/"'
+        buildConfigField "String", "INSTAGRAM_API_BASE_URL", '"https://api.instagram.com/v1/"'
+        buildConfigField "String", "DEFAULT_TOKEN", '"4535025044.e1998f6.a7aae84413f141d0918382451296d7f7"'
+        buildConfigField "String", "CONSUMER_KEY", '"e1998f69f0e94024ac1d3f41caf3290a"'
+        buildConfigField "String", "CONSUMER_SECRET", '"492e75d00319458fbc900e932eee5f59"'
+        buildConfigField "String", "AUTHORIZE_URL", '"https://api.instagram.com/oauth/authorize"'
+        buildConfigField "String", "ACCESS_TOKEN_URL", '"https://api.instagram.com/oauth/access_token"'
+        buildConfigField "String", "CALLBACK_URL", '"http://www.korecow.jp/api/chao_redirect.php"'
+        buildConfigField "String", "SCOPE", '"public_content+follower_list+comments+likes+relationships"'
+        buildConfigField "String", "INSTAGRAM_PAGE", '"https://www.instagram.com/"'
+        buildConfigField "String", "INSTAGRAM_PAGE_LOGOUT", '"https://instagram.com/accounts/logout/"'
+
+        buildConfigField "String", "SUPPORT_LIBRARIES_VERSION", '"' + SUPPORT_LIBRARIES_VERSION + '"'
+
+    }
+
+    lintOptions {
+        checkReleaseBuilds false
+        abortOnError false
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    productFlavors {
+        DevVersion {
+            applicationId "com.sns.repost.test"
+            buildConfigField "String", "DEFAULT_TOKEN", '"4535025044.e1998f6.a7aae84413f141d0918382451296d7f7"'
+
+        }
+
+        ProdVersion {
+            applicationId "com.sns.repost"
+            buildConfigField "String", "DEFAULT_TOKEN", '"4535025044.e1998f6.a7aae84413f141d0918382451296d7f7"'
+        }
+    }
+
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+    compile 'com.android.support:appcompat-v7:25.3.1'
+    compile 'com.android.support.constraint:constraint-layout:1.0.2'
+    compile 'com.android.support:design:25.3.1'
+    testCompile 'junit:junit:4.12'
+    compile 'com.squareup.retrofit2:retrofit:2.+'
+    compile 'com.squareup.retrofit2:converter-gson:2.+'
+    compile 'com.squareup.retrofit2:converter-scalars:2.1.0'
+    compile 'com.marshalchen.ultimaterecyclerview:library:0.7.2'
+    compile 'com.google.code.gson:gson:2.2.+'
+    compile 'com.jakewharton:butterknife:7.0.1'
+    compile 'com.github.bumptech.glide:glide:3.7.0'
+    compile 'com.android.support:cardview-v7:23.3.+'
+    compile 'org.greenrobot:eventbus:3.0.0'
+    compile 'com.yarolegovich:discrete-scrollview:1.1.4'
+    compile 'me.relex:circleindicator:1.2.2@aar'
+    compile 'com.github.florent37:viewanimator:1.0.5'
+    compile 'com.makeramen:roundedimageview:2.3.0'
+    compile 'com.github.wrdlbrnft:sorted-list-adapter:0.2.0.19'
+    compile 'uk.co.chrisjenx:calligraphy:2.2.0'
+    compile 'com.optimus:editTextField:0.2.0'
+    compile 'info.hoang8f:android-segmented:1.0.6'
+    //FlipView
+    compile "eu.davidea:flipview:1.1.2"
+    compile 'com.ryanharter.auto.value:auto-value-parcel-adapter:0.2.5'
+    compile 'com.ms-square:expandableTextView:0.1.4'
+    compile 'com.wang.avi:library:2.1.3'
+    compile 'com.squareup.picasso:picasso:2.5.2'
+    compile 'de.hdodenhof:circleimageview:2.1.0'
+    compile 'com.commit451:PhotoView:1.2.4'
+}

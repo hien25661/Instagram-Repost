@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Repost</string>
+    <string name="error_install_instagram">Instagram application not installed !</string>
+    <string name="error">An error has occurred, please try again later !</string>
+</resources>
