@@ -283,6 +283,13 @@ public class MediaAdapter extends UltimateViewAdapter {
                     Utils.showPhotoInInstagram(mAct,media.getLink());
                 }
             });
+
+            ((ViewHolder) holder).btnRepost.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Utils.openRepostScreen(mContext,media);
+                }
+            });
         }
     }
 
@@ -324,6 +331,8 @@ public class MediaAdapter extends UltimateViewAdapter {
         View viewBottom;
         @Bind(R.id.viewSpace)
         View viewSpace;
+        @Bind(R.id.btnRepost)
+        TextView btnRepost;
 
         @Bind(R.id.itemview)
         View item_view;

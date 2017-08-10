@@ -6,13 +6,18 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.app.ActivityManager;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Point;
 import android.graphics.PointF;
+import android.media.MediaScannerConnection;
 import android.net.Uri;
+import android.os.Build;
+import android.os.Environment;
 import android.support.v4.widget.NestedScrollView;
 import android.text.format.DateUtils;
 import android.util.DisplayMetrics;
@@ -36,16 +41,24 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.sns.repost.BuildConfig;
 import com.sns.repost.RepostApplication;
+import com.sns.repost.activities.RepostActivity;
 import com.sns.repost.adapters.MediaAdapter;
 import com.sns.repost.helpers.customview.CircleTransform;
 import com.sns.repost.models.Media;
 import com.sns.repost.models.User;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.lang.reflect.Type;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Random;
 import com.sns.repost.R;
@@ -58,6 +71,10 @@ public class Utils {
     private static final DecelerateInterpolator DECCELERATE_INTERPOLATOR = new DecelerateInterpolator();
     private static final AccelerateInterpolator ACCELERATE_INTERPOLATOR = new AccelerateInterpolator();
     private static final OvershootInterpolator OVERSHOOT_INTERPOLATOR = new OvershootInterpolator(4);
+
+    private static String DATA_PATH = "";
+    public static final String DIR_APP_NAME = "repost_for_ig";
+    public static Activity currentActivity = null;
     public static int getScreenWidth() {
         return Resources.getSystem().getDisplayMetrics().widthPixels;
     }
@@ -348,5 +365,101 @@ public class Utils {
         Gson gson = new Gson();
         media = gson.fromJson(json, Media.class);
         return media;
+    }
+
+    public static void openRepostScreen(Context context,Media media){
+        Intent t = new Intent(context, RepostActivity.class);
+        t.putExtra(Consts.PARAM_MEDIA,media.toJson());
+        context.startActivity(t);
+    }
+
+    public static String getAppDataPath() {
+        if (DATA_PATH.equals("")) {
+            DATA_PATH = Environment.getExternalStorageDirectory() + File.separator + DIR_APP_NAME + File.separator;
+        }
+        File samplesDir = new File(DATA_PATH);
+        if (!samplesDir.exists()) {
+            samplesDir.mkdirs();
+        }
+        return DATA_PATH;
+    }
+    public static void copyToClipBoard(final Activity act, final String libelle, final String textToCopy) {
+        act.runOnUiThread(new Runnable() {
+            public void run() {
+                try {
+                    if (Build.VERSION.SDK_INT < 11) {
+                        ((ClipboardManager) act.getSystemService("clipboard")).setText(textToCopy);
+                    } else {
+                        try {
+                            ((android.content.ClipboardManager) act.getSystemService("clipboard")).setPrimaryClip(ClipData.newPlainText(libelle, textToCopy));
+                        } catch (NullPointerException e) {
+                        } catch (SecurityException e2) {
+                        } catch (RuntimeException e3) {
+                        }
+                    }
+                    Utils.showToast(act, act.getString(R.string.copy_caption));
+                } catch (IllegalStateException e4) {
+                    Log.e("EZRepost", "IllegalStateException raised when accessing clipboard.");
+                }
+            }
+        });
+    }
+
+    public static String getTimestamp() {
+        return new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date()) + "_EZRepost";
+    }
+
+    public static void copyFile(File source, File dest) throws IOException {
+        InputStream in = new FileInputStream(source);
+        OutputStream out = new FileOutputStream(dest);
+        byte[] buf = new byte[1024];
+        while (true) {
+            int len = in.read(buf);
+            if (len > 0) {
+                out.write(buf, 0, len);
+            } else {
+                in.close();
+                out.close();
+                return;
+            }
+        }
+    }
+
+    public static void startShareInstagremIntent(Activity act, String mSavedPath, String caption) {
+        if (checkInstagramInstalled(act)) {
+            Intent sharingIntent = new Intent("android.intent.action.SEND");
+            String type = "";
+            if (mSavedPath.contains("mp4")) {
+                type = "video/*";
+            } else {
+                type = "image/*";
+            }
+            sharingIntent.setType(type);
+            sharingIntent.putExtra("android.intent.extra.STREAM", Uri.fromFile(new File(mSavedPath)));
+            sharingIntent.putExtra("android.intent.extra.TEXT", caption);
+            sharingIntent.setPackage("com.instagram.android");
+            act.startActivity(sharingIntent);
+        }
+    }
+
+    public static void startShareIntent(Activity act, String mSavedPath, String caption) {
+        Intent sharingIntent = new Intent("android.intent.action.SEND");
+        sharingIntent.setType("video/*");
+        sharingIntent.putExtra("android.intent.extra.STREAM", Uri.fromFile(new File(mSavedPath)));
+        sharingIntent.putExtra("android.intent.extra.TEXT", caption);
+        act.startActivity(Intent.createChooser(sharingIntent, act.getString(R.string.share_title)));
+    }
+
+    public static void scanFile(Activity act, String path) {
+        MediaScannerConnection.scanFile(act.getApplicationContext(), new String[]{path}, null, new scanListener());
+    }
+
+    static class scanListener implements MediaScannerConnection.OnScanCompletedListener {
+        scanListener() {
+        }
+
+        public void onScanCompleted(String path, Uri uri) {
+            Log.v("grokkingandroid", "file " + path + " was scanned seccessfully: " + uri);
+        }
     }
 }

@@ -23,4 +23,6 @@
         <item name="android:windowBackground">@android:color/transparent</item>
         <item name="fontPath">fonts/Lato-Regular.ttf</item>
     </style>
+
+
 </resources>

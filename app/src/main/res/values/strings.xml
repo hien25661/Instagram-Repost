@@ -2,4 +2,16 @@
     <string name="app_name">Repost</string>
     <string name="error_install_instagram">Instagram application not installed !</string>
     <string name="error">An error has occurred, please try again later !</string>
+    <string name="copy_caption">Caption copied to clipboard, just paste it !</string>
+    <string name="caption">Caption</string>
+    <string name="share_title">Share ...</string>
+    <string name="media_saved">Picture saved at :</string>
+    <string name="preparing_repost">Preparing Repost</string>
+    <string name="video_saved">Video saved at :</string>
+    <string name="wait_media">Wait for the display of media</string>
+    <string name="preparing_download">Download Video</string>
+    <string name="unavailable_private_content">Unavailable or private content !</string>
+    <string name="network_error">Network Error !</string>
+    <string name="please_try_again">Please try again !</string>
+    <string name="download_started_background">Download started in background</string>
 </resources>
