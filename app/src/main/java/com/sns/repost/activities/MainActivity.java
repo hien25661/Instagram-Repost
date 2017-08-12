@@ -58,9 +58,6 @@ public class MainActivity extends BaseActivity {
         userLoader = UserLoader.getInstance();
         mediaLoader = MediaLoader.getInstance();
         appSettings = RepostApplication.getInstance().getAppSettings();
-//        if (Build.VERSION.SDK_INT > 22) {
-//            verifyStoragePermissions(this);
-//        }
         initView();
         loadData();
     }
@@ -143,6 +140,9 @@ public class MainActivity extends BaseActivity {
                 }
             });*/
         } else {
+            if (Build.VERSION.SDK_INT > 22) {
+                verifyStoragePermissions(this);
+            }
             if (userLoader.getUser() == null) {
                 userLoader.loadSelf(new SimpleCallback() {
                     @Override
