@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.ClipData;
@@ -31,6 +32,8 @@ import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.OvershootInterpolator;
 import android.view.inputmethod.InputMethodManager;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -53,6 +56,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Type;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -62,6 +66,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Random;
 import com.sns.repost.R;
+
+import net.londatiga.android.instagram.Instagram;
+import net.londatiga.android.instagram.InstagramSession;
 
 /**
  * Created by Hien on 5/6/2017.
@@ -75,9 +82,11 @@ public class Utils {
     private static String DATA_PATH = "";
     public static final String DIR_APP_NAME = "repost_for_ig";
     public static Activity currentActivity = null;
+    public static String userAgent = "Instagram 8.0.0 Android (18/4.3; 320dpi; 720x1280; Xiaomi; HM 1SW; armani; qcom; en_US)";
     public static int getScreenWidth() {
         return Resources.getSystem().getDisplayMetrics().widthPixels;
     }
+
 
     public static int getScreenHeight() {
         return Resources.getSystem().getDisplayMetrics().heightPixels;
@@ -460,6 +469,54 @@ public class Utils {
 
         public void onScanCompleted(String path, Uri uri) {
             Log.v("grokkingandroid", "file " + path + " was scanned seccessfully: " + uri);
+        }
+    }
+    private static Instagram mInstagram;
+    private static InstagramSession mInstagramSession;
+    public static InstagramSession getInstagramSession(Activity act) {
+        if (mInstagram == null) {
+            mInstagram = new Instagram(act,
+                    BuildConfig.CONSUMER_KEY, BuildConfig.CONSUMER_SECRET, BuildConfig.CALLBACK_URL);
+        }
+        if (mInstagramSession == null) {
+            mInstagramSession = mInstagram.getSession();
+        }
+        return mInstagramSession;
+    }
+
+    public static Instagram getInstagram(Activity act, boolean getNew) {
+        if (mInstagram == null || getNew) {
+            mInstagram = new Instagram(act,
+                    BuildConfig.CONSUMER_KEY, BuildConfig.CONSUMER_SECRET, BuildConfig.CALLBACK_URL);
+        }
+        return mInstagram;
+    }
+
+    // You may uncomment next line if using Android Annotations library, otherwise just be sure to run it in on the UI thread
+// @UiThread
+    public static String getDefaultUserAgentString(Context context) {
+        if (Build.VERSION.SDK_INT >= 17) {
+            return NewApiWrapper.getDefaultUserAgent(context);
+        }
+
+        try {
+            Constructor<WebSettings> constructor = WebSettings.class.getDeclaredConstructor(Context.class, WebView.class);
+            constructor.setAccessible(true);
+            try {
+                WebSettings settings = constructor.newInstance(context, null);
+                return settings.getUserAgentString();
+            } finally {
+                constructor.setAccessible(false);
+            }
+        } catch (Exception e) {
+            return new WebView(context).getSettings().getUserAgentString();
+        }
+    }
+
+    @TargetApi(17)
+    static class NewApiWrapper {
+        static String getDefaultUserAgent(Context context) {
+            return WebSettings.getDefaultUserAgent(context);
         }
     }
 }

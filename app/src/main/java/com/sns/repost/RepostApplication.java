@@ -6,10 +6,15 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
 
+import com.franmontiel.persistentcookiejar.ClearableCookieJar;
+import com.franmontiel.persistentcookiejar.PersistentCookieJar;
+import com.franmontiel.persistentcookiejar.cache.SetCookieCache;
+import com.franmontiel.persistentcookiejar.persistence.SharedPrefsCookiePersistor;
 import com.sns.repost.utils.AppSettings;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import okhttp3.OkHttpClient;
 
 
 public class RepostApplication extends Application {
@@ -19,11 +24,16 @@ public class RepostApplication extends Application {
     public static RepostApplication getInstance(){
         return instance;
     }
+
+    ClearableCookieJar cookieJar;
+    OkHttpClient httpClient;
     @Override
     public void onCreate() {
         super.onCreate();
         appSettings = new AppSettings(this);
         instance = this;
+        this.cookieJar = new PersistentCookieJar(new SetCookieCache(), new SharedPrefsCookiePersistor(this));
+        this.httpClient = new OkHttpClient.Builder().cookieJar(this.cookieJar).build();
     }
     public boolean isNetworkConnected() {
         if (networkConnected != null) return networkConnected.get();
@@ -41,5 +51,11 @@ public class RepostApplication extends Application {
     protected void attachBaseContext(Context base) {
         super.attachBaseContext(base);
     }
+    public OkHttpClient getHttpClient() {
+        return this.httpClient;
+    }
 
+    public void logout() {
+        this.cookieJar.clear();
+    }
 }

@@ -88,4 +88,7 @@ dependencies {
     compile 'de.hdodenhof:circleimageview:2.1.0'
     compile 'com.commit451:PhotoView:1.2.4'
     compile 'com.loopj.android:android-async-http:1.4.9'
+    compile 'com.github.franmontiel:PersistentCookieJar:v1.0.1'
+    compile 'com.squareup.okhttp3:okhttp:3.8.1'
+    compile project(':library')
 }

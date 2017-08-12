@@ -3,6 +3,10 @@ package com.sns.repost.loader;
 import android.util.Log;
 
 
+import com.franmontiel.persistentcookiejar.ClearableCookieJar;
+import com.franmontiel.persistentcookiejar.PersistentCookieJar;
+import com.franmontiel.persistentcookiejar.cache.SetCookieCache;
+import com.franmontiel.persistentcookiejar.persistence.SharedPrefsCookiePersistor;
 import com.sns.repost.BuildConfig;
 import com.sns.repost.RepostApplication;
 import com.sns.repost.api.InstagramService;
@@ -12,10 +16,16 @@ import com.sns.repost.models.Media;
 import com.sns.repost.services.response.GetCommentResponse;
 import com.sns.repost.services.response.LikeResponse;
 import com.sns.repost.services.response.LoadLikedResponse;
+import com.sns.repost.utils.Consts;
+import com.sns.repost.utils.Utils;
 
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -63,17 +73,55 @@ public class MediaLoader {
     }
 
     public void loadPopular(final SuccessfullCallback callback) {
-        InstagramService.creatTestServiceApi().loadPopular(BuildConfig.CONSUMER_KEY).enqueue(new Callback<String>() {
+        String url = "https://i.instagram.com/api/v1/feed/popular/?people_teaser_supported=1";
+//        InstagramService.creatTestServiceApi().loadPopular(Utils.userAgent,url).enqueue(new Callback<String>() {
+//            @Override
+//            public void onResponse(Call<String> call, Response<String> response) {
+//                Log.e("loadPopular", ""+response.body());
+//            }
+//
+//            @Override
+//            public void onFailure(Call<String> call, Throwable t) {
+//                Log.e("loadPopular", t.getMessage());
+//            }
+//        });
+//        ClearableCookieJar cookieJar = new PersistentCookieJar(new SetCookieCache(),
+//                new SharedPrefsCookiePersistor(RepostApplication.getInstance()));
+//        OkHttpClient client = new OkHttpClient.Builder()
+//                .cookieJar(cookieJar)
+//                .build();
+//
+//        Request request = new Request.Builder()
+//                .url(url)
+//                .get().addHeader("User-Agent",Utils.userAgent)
+//                .build();
+//        client.newCall(request).enqueue(new okhttp3.Callback() {
+//            @Override
+//            public void onFailure(okhttp3.Call call, IOException e) {
+//
+//            }
+//
+//            @Override
+//            public void onResponse(okhttp3.Call call, okhttp3.Response responses) throws IOException {
+//                String response = responses.body().string();
+//                Log.e("loadPopular", ""+response);
+//            }
+//        });
+        RepostApplication.getInstance().getHttpClient()
+                .newCall(Consts.requestreformer(Consts.requestreformer(
+                        new Request.Builder().url(url).build()))).enqueue(new okhttp3.Callback() {
             @Override
-            public void onResponse(Call<String> call, Response<String> response) {
-                Log.e("loadPopular", ""+response.toString());
+            public void onFailure(okhttp3.Call call, IOException e) {
+
             }
 
             @Override
-            public void onFailure(Call<String> call, Throwable t) {
-                Log.e("loadPopular", t.getMessage());
+            public void onResponse(okhttp3.Call call, okhttp3.Response responses) throws IOException {
+                String response = responses.body().string();
+                Log.e("loadPopular", ""+response);
             }
         });
+
     }
 
     public void loadMoreLike(String nextUrl, final SuccessfullCallback callback) {

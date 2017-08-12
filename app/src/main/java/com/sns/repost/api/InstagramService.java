@@ -1,8 +1,14 @@
 package com.sns.repost.api;
 
 
+import com.franmontiel.persistentcookiejar.ClearableCookieJar;
+import com.franmontiel.persistentcookiejar.PersistentCookieJar;
+import com.franmontiel.persistentcookiejar.cache.SetCookieCache;
+import com.franmontiel.persistentcookiejar.persistence.SharedPrefsCookiePersistor;
 import com.sns.repost.BuildConfig;
+import com.sns.repost.RepostApplication;
 
+import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.converter.scalars.ScalarsConverterFactory;
@@ -52,11 +58,22 @@ public class InstagramService {
 
 
     private static Retrofit getRetrofitInstagramTokenTest() {
-        return new Retrofit.Builder()
-                .baseUrl("https://api.instagram.com/")
-                .addConverterFactory(ScalarsConverterFactory.create())
+        ClearableCookieJar cookieJar = new PersistentCookieJar(new SetCookieCache(),
+                new SharedPrefsCookiePersistor(RepostApplication.getInstance()));
+        OkHttpClient okHttpClient = new OkHttpClient.Builder()
+                .cookieJar(cookieJar)
                 .build();
-    }
+//        return new Retrofit.Builder()
+//                .baseUrl("https://api.instagram.com/")
+//                .addConverterFactory(ScalarsConverterFactory.create())
+//                .build();
+           return new Retrofit.Builder()
+                    .baseUrl(API_BASE_URL)
+                    .addConverterFactory(ScalarsConverterFactory.create())
+                    .client(okHttpClient)
+                    .build();
+        }
+
     public static final String API_BASE_URL = "https://i.instagram.com/api/v1/";
     public static InstagramApi creatTestServiceApi() {
         instagramApi1 = getRetrofitInstagramTokenTest().create(InstagramApi.class);

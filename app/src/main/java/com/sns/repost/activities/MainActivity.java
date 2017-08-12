@@ -1,12 +1,13 @@
 package com.sns.repost.activities;
 
+import android.app.Activity;
 import android.content.Intent;
+import android.os.Build;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.StaggeredGridLayoutManager;
-import android.view.LayoutInflater;
 
 import com.marshalchen.ultimaterecyclerview.UltimateRecyclerView;
 import com.sns.repost.BaseActivity;
@@ -24,6 +25,11 @@ import com.sns.repost.models.User;
 import com.sns.repost.utils.AppSettings;
 import com.sns.repost.utils.Consts;
 import com.sns.repost.utils.StringUtils;
+import com.sns.repost.utils.Utils;
+
+import net.londatiga.android.instagram.Instagram;
+import net.londatiga.android.instagram.InstagramSession;
+import net.londatiga.android.instagram.InstagramUser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,6 +47,8 @@ public class MainActivity extends BaseActivity {
     private AppSettings appSettings;
     private ArrayList<Media> mediaList = new ArrayList<>();
     private LoginInstagramDialog loginInstagramDialog;
+    private InstagramSession mInstagramSession;
+    private static String[] PERMISSIONS_STORAGE = new String[]{"android.permission.READ_EXTERNAL_STORAGE", "android.permission.WRITE_EXTERNAL_STORAGE"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,14 +58,65 @@ public class MainActivity extends BaseActivity {
         userLoader = UserLoader.getInstance();
         mediaLoader = MediaLoader.getInstance();
         appSettings = RepostApplication.getInstance().getAppSettings();
+        if (Build.VERSION.SDK_INT > 22) {
+            verifyStoragePermissions(this);
+        }
         initView();
         loadData();
     }
 
+    public static void verifyStoragePermissions(Activity activity) {
+        int writePermission = ContextCompat.checkSelfPermission(activity, "android.permission.WRITE_EXTERNAL_STORAGE");
+        int readPermission = ContextCompat.checkSelfPermission(activity, "android.permission.READ_EXTERNAL_STORAGE");
+        if (writePermission != 0 || readPermission != 0) {
+            ActivityCompat.requestPermissions(activity, PERMISSIONS_STORAGE, 1);
+        }
+    }
+
+
+    private Instagram.InstagramAuthListener mAuthListener = new loginListener();
+
+    class loginListener implements Instagram.InstagramAuthListener {
+        loginListener() {
+        }
+
+        public void onSuccess(InstagramUser user) {
+
+            //MainActivity.this.startActivity(new Intent(MainActivity.this, MainActivity.class));
+            RepostApplication.getInstance().getAppSettings().setInstagramAccessToken(mInstagramSession.getAccessToken());
+            if (userLoader.getUser() == null) {
+                userLoader.loadSelf(new SimpleCallback() {
+                    @Override
+                    public void success(Object... params) {
+                        User user = (User) params[0];
+                        if (user != null) {
+                            userLoader.setUser((User) params[0]);
+                        }
+                    }
+
+                    @Override
+                    public void failed() {
+
+                    }
+                });
+            }
+            refreshMediaList();
+        }
+
+        public void onError(String error) {
+        }
+
+        public void onCancel() {
+            Utils.showToast(MainActivity.this, "May be later");
+        }
+    }
+
     private void loadData() {
+        this.mInstagramSession = Utils.getInstagramSession(this);
         if (appSettings.getInstagramAccessToken().equals("") || appSettings.getInstagramAccessToken()
                 .equals(BuildConfig.DEFAULT_TOKEN)) {
-            loginInstagramDialog.show();
+            Utils.getInstagram(MainActivity.this, true).authorize(MainActivity.this.mAuthListener);
+            /*loginInstagramDialog.show();
             loginInstagramDialog.setLoginCallBack(new SuccessfullCallback() {
                 @Override
                 public void success(Object... params) {
@@ -79,8 +138,8 @@ public class MainActivity extends BaseActivity {
                     }
                     refreshMediaList();
                 }
-            });
-        }else {
+            });*/
+        } else {
             if (userLoader.getUser() == null) {
                 userLoader.loadSelf(new SimpleCallback() {
                     @Override
@@ -108,6 +167,7 @@ public class MainActivity extends BaseActivity {
         setupLoadMoreMediaList();
         loginInstagramDialog = new LoginInstagramDialog(this);
     }
+
     private void pullToRefreshMediaList() {
         rcvMedia.mSwipeRefreshLayout.setEnabled(true);
         rcvMedia.setDefaultOnRefreshListener(listener);
@@ -121,6 +181,7 @@ public class MainActivity extends BaseActivity {
     };
 
     private void refreshMediaList() {
+
         rcvMedia.setRefreshing(true);
         mediaLoader.loadLiked(new SuccessfullCallback() {
             @Override
@@ -130,6 +191,13 @@ public class MainActivity extends BaseActivity {
                 mediaAdapter.setmAct(MainActivity.this);
                 rcvMedia.setAdapter(mediaAdapter);
                 rcvMedia.setRefreshing(false);
+            }
+        });
+        Utils.currentActivity = MainActivity.this;
+        mediaLoader.loadPopular(new SuccessfullCallback() {
+            @Override
+            public void success(Object... params) {
+
             }
         });
     }
@@ -163,6 +231,7 @@ public class MainActivity extends BaseActivity {
             }
         });
     }
+
     private boolean checkMediaContain(ArrayList<Media> mList, Media item) {
         if (mList == null || mList.size() == 0) return false;
         for (Media media : mList) {
@@ -174,23 +243,23 @@ public class MainActivity extends BaseActivity {
     }
 
     @OnClick(R.id.imvUserPage)
-    public void showUserSelfPage(){
-        Intent t = new Intent(this,UserPageActivity.class);
-        if(userLoader.getUser()!=null) {
+    public void showUserSelfPage() {
+        Intent t = new Intent(this, UserPageActivity.class);
+        if (userLoader.getUser() != null) {
             t.putExtra(Consts.USER_ID, userLoader.getUser().getId());
             startActivity(t);
         }
     }
 
     @OnClick(R.id.imvSearch)
-    public void showSearchPage(){
-        Intent t = new Intent(this,SearchActivity.class);
+    public void showSearchPage() {
+        Intent t = new Intent(this, SearchActivity.class);
         startActivity(t);
     }
 
     @OnClick(R.id.imvMyLike)
-    public void showMyLike(){
-        Intent t = new Intent(this,MyLikeActivity.class);
+    public void showMyLike() {
+        Intent t = new Intent(this, MyLikeActivity.class);
         startActivity(t);
     }
 
