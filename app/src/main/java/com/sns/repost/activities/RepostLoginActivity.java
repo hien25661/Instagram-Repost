@@ -46,6 +46,7 @@ public class RepostLoginActivity extends BaseActivity {
             Intent t = new Intent(RepostLoginActivity.this,MainActivity.class);
             t.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(t);
+            finish();
         }
 
         public void onError(String error) {
