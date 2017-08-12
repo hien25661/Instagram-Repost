@@ -58,9 +58,9 @@ public class MainActivity extends BaseActivity {
         userLoader = UserLoader.getInstance();
         mediaLoader = MediaLoader.getInstance();
         appSettings = RepostApplication.getInstance().getAppSettings();
-        if (Build.VERSION.SDK_INT > 22) {
-            verifyStoragePermissions(this);
-        }
+//        if (Build.VERSION.SDK_INT > 22) {
+//            verifyStoragePermissions(this);
+//        }
         initView();
         loadData();
     }
@@ -115,7 +115,10 @@ public class MainActivity extends BaseActivity {
         this.mInstagramSession = Utils.getInstagramSession(this);
         if (appSettings.getInstagramAccessToken().equals("") || appSettings.getInstagramAccessToken()
                 .equals(BuildConfig.DEFAULT_TOKEN)) {
-            Utils.getInstagram(MainActivity.this, true).authorize(MainActivity.this.mAuthListener);
+            //Utils.getInstagram(MainActivity.this, true).authorize(MainActivity.this.mAuthListener);
+            Intent t = new Intent(MainActivity.this,RepostLoginActivity.class);
+            startActivity(t);
+            finish();
             /*loginInstagramDialog.show();
             loginInstagramDialog.setLoginCallBack(new SuccessfullCallback() {
                 @Override

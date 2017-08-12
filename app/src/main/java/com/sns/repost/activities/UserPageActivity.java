@@ -1,7 +1,11 @@
 package com.sns.repost.activities;
 
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.widget.ImageView;
@@ -11,6 +15,7 @@ import com.bumptech.glide.Glide;
 import com.marshalchen.ultimaterecyclerview.UltimateRecyclerView;
 import com.sns.repost.BaseActivity;
 import com.sns.repost.R;
+import com.sns.repost.RepostApplication;
 import com.sns.repost.adapters.MediaAdapter;
 import com.sns.repost.helpers.callback.SimpleCallback;
 import com.sns.repost.helpers.callback.SuccessfullCallback;
@@ -55,6 +60,7 @@ public class UserPageActivity extends BaseActivity {
     private MediaAdapter mediaAdapter;
     private FollowLoader followLoader;
     private ArrayList<Media> mediaList = new java.util.ArrayList<>();
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,12 +75,12 @@ public class UserPageActivity extends BaseActivity {
 
     private void initView() {
         rcvMedia.setHasFixedSize(false);
-        rcvMedia.setLayoutManager(new GridLayoutManager(this,3));
+        rcvMedia.setLayoutManager(new GridLayoutManager(this, 3));
         setupLoadMoreMediaList();
     }
 
     private void loadData() {
-        if(StringUtils.isEmpty(user_id)) return;
+        if (StringUtils.isEmpty(user_id)) return;
         loadUserMedia();
         userLoader.loadUser(user_id, new SimpleCallback() {
             @Override
@@ -90,16 +96,16 @@ public class UserPageActivity extends BaseActivity {
         });
     }
 
-    private void bindDataUser(){
+    private void bindDataUser() {
         tvNumbMedia.setText(user.getCounts().getMedia() + " MEDIA");
         tvNumbFollower.setText(user.getCounts().getFollowedBy() + " FOLLOWERS");
         tvNumbFollow.setText(user.getCounts().getFollows() + " FOLLOWS");
-        Utils.showImage(UserPageActivity.this,user.getProfilePicture(),imvAvatar);
+        Utils.showImage(UserPageActivity.this, user.getProfilePicture(), imvAvatar);
         tvUserName.setText(user.getUsername());
         tvTitle.setText(user.getUsername());
     }
 
-    private void loadUserMedia(){
+    private void loadUserMedia() {
         rcvMedia.setRefreshing(true);
         followLoader.getMediaFollowUser(user_id, new SimpleCallback() {
             @Override
@@ -150,8 +156,39 @@ public class UserPageActivity extends BaseActivity {
         });
     }
 
+    @OnClick(R.id.imvLogout)
+    public void logout() {
+        AlertDialog.Builder builder;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            builder = new AlertDialog.Builder(this, android.R.style.Theme_Material_Dialog_Alert);
+        } else {
+            builder = new AlertDialog.Builder(this);
+        }
+        builder.setTitle("Repost")
+                .setMessage("Are you sure you want to Logout?")
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        // continue with delete
+                        dialog.dismiss();
+                        RepostApplication.getInstance().getAppSettings().setInstagramAccessToken("");
+                        Intent t = new Intent(UserPageActivity.this,MainActivity.class);
+                        t.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(t);
+                        finish();
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        // do nothing
+                        dialog.dismiss();
+                    }
+                })
+                .setIcon(R.mipmap.ic_launcher)
+                .show();
+    }
+
     @OnClick(R.id.imvBack)
-    public void onBack(){
+    public void onBack() {
         onBackPressed();
     }
 }

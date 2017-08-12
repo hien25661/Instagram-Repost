@@ -264,16 +264,19 @@ public class DetailMediaActivity extends BaseActivity {
             }
         }
     }
-    private void openTagScreen(String tagName){
-        Intent t = new Intent(this,TagFeedActivity.class);
-        t.putExtra(Consts.PARAM_TAG_NAME,tagName.replaceAll("#",""));
+
+    private void openTagScreen(String tagName) {
+        Intent t = new Intent(this, TagFeedActivity.class);
+        t.putExtra(Consts.PARAM_TAG_NAME, tagName.replaceAll("#", ""));
         this.startActivity(t);
     }
-    private void openUserFeedScreen(User user){
-        Intent t = new Intent(this,UserPageActivity.class);
-        t.putExtra(Consts.USER_ID,user.getId());
+
+    private void openUserFeedScreen(User user) {
+        Intent t = new Intent(this, UserPageActivity.class);
+        t.putExtra(Consts.USER_ID, user.getId());
         this.startActivity(t);
     }
+
     private User checkUserExist(ArrayList<LoadLikedResponse.UsersInPhoto> usersInPhotos, String userName) {
         User user = null;
         if (usersInPhotos == null || usersInPhotos.size() == 0) return user;
@@ -289,7 +292,16 @@ public class DetailMediaActivity extends BaseActivity {
     }
 
     @OnClick(R.id.imvBack)
-    public void onBack(){
+    public void onBack() {
         onBackPressed();
+    }
+
+    @OnClick(R.id.imvBrowseInstagram)
+    public void linkInstagram() {
+        Utils.showPhotoInInstagram(this,media.getLink());
+    }
+    @OnClick(R.id.btnRepost)
+    public void repost() {
+        Utils.openRepostScreen(this, media);
     }
 }
