@@ -34,4 +34,11 @@ public class AppSettings extends SharedPreferencesService{
         return getSettings().getBoolean("isLogin", false);
     }
 
+    public void setShowTut(boolean isShow){
+        this.getSettings().edit().putBoolean("showTut",isShow).apply();
+    }
+    public boolean getShowTut(){
+        return getSettings().getBoolean("showTut", false);
+    }
+
 }
