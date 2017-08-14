@@ -196,7 +196,7 @@ public class RepostActivity extends BaseActivity {
         if (this.mBitmapResult != null) {
             this.mediaImage.buildDrawingCache();
             new SampleSaver(this, this.mBitmapResult, new SimpleDateFormat("yyyyMMdd_HHmmss")
-                    .format(new Date()) + "_SNS_REPOST", Boolean.valueOf(spyMode), Boolean.valueOf(repost))
+                    .format(new Date()) + "_SNSRepost", Boolean.valueOf(spyMode), Boolean.valueOf(repost))
                     .execute(new Integer[]{Integer.valueOf(0)});
             return;
         }
