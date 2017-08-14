@@ -112,4 +112,5 @@ dependencies {
     }
     compile project(':library')
     compile project(':paper-onboarding')
+    compile 'com.google.android.gms:play-services-ads:8.4.0'
 }
