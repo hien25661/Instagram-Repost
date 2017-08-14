@@ -181,30 +181,30 @@ public class MediaLoader {
 
 
                                 ArrayList<UsersInPhoto> usersInPhotos = new ArrayList<UsersInPhoto>();
-//                                if(jsonData.getJSONObject(i).has("usertags")) {
-//                                    JSONObject jsonUserInPhotoTag = jsonData.getJSONObject(i).getJSONObject("usertags");
-//                                    if (jsonUserInPhotoTag.has("in")) {
-//                                        JSONArray jsonUserInPhotos = jsonUserInPhotoTag.getJSONArray("in");
-//                                        int numbUser = jsonUserInPhotos.length();
-//                                        if (numbUser > 0) {
-//                                            int j = 0;
-//                                            while (j < numbUser) {
-//                                                JSONObject jsonUserIn = jsonUserInPhotos.getJSONObject(j)
-//                                                        .getJSONObject("user");
-//                                                User inUser = new User();
-//                                                inUser.setId(jsonUserIn.getString("pk"));
-//                                                inUser.setUsername(jsonUserIn.getString("username"));
-//                                                inUser.setProfilePicture(jsonUserIn.getString("profile_pic_url"));
-//
-//                                                UsersInPhoto usersInPhoto = new UsersInPhoto();
-//                                                usersInPhoto.setUser(inUser);
-//                                                usersInPhotos.add(usersInPhoto);
-//                                                j++;
-//                                            }
-//                                        }
-//
-//                                    }
-//                                }
+                                if(jsonData.getJSONObject(i).has("usertags")) {
+                                    JSONObject jsonUserInPhotoTag = jsonData.getJSONObject(i).getJSONObject("usertags");
+                                    if (jsonUserInPhotoTag.has("in")) {
+                                        JSONArray jsonUserInPhotos = jsonUserInPhotoTag.getJSONArray("in");
+                                        int numbUser = jsonUserInPhotos.length();
+                                        if (numbUser > 0) {
+                                            int j = 0;
+                                            while (j < numbUser) {
+                                                JSONObject jsonUserIn = jsonUserInPhotos.getJSONObject(j)
+                                                        .getJSONObject("user");
+                                                User inUser = new User();
+                                                inUser.setId(jsonUserIn.getString("pk"));
+                                                inUser.setUsername(jsonUserIn.getString("username"));
+                                                inUser.setProfilePicture(jsonUserIn.getString("profile_pic_url"));
+
+                                                UsersInPhoto usersInPhoto = new UsersInPhoto();
+                                                usersInPhoto.setUser(inUser);
+                                                usersInPhotos.add(usersInPhoto);
+                                                j++;
+                                            }
+                                        }
+
+                                    }
+                                }
                                 si.isVideo = false;
                                 if (type.equals("1")) {
                                     si.isVideo = false;
