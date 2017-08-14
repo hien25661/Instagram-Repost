@@ -34,7 +34,9 @@ public class StoryInfo implements Parcelable {
             return new StoryInfo[size];
         }
     }
+    public StoryInfo(){
 
+    }
     public StoryInfo(Parcel in) {
         boolean z;
         boolean z2 = true;

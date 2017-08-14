@@ -47,7 +47,9 @@ import com.sns.repost.RepostApplication;
 import com.sns.repost.activities.RepostActivity;
 import com.sns.repost.adapters.MediaAdapter;
 import com.sns.repost.helpers.customview.CircleTransform;
+import com.sns.repost.models.Images;
 import com.sns.repost.models.Media;
+import com.sns.repost.models.StandardResolution;
 import com.sns.repost.models.User;
 
 import java.io.File;
@@ -65,10 +67,13 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
+
 import com.sns.repost.R;
+import com.sns.repost.models.Videos;
 
 import net.londatiga.android.instagram.Instagram;
 import net.londatiga.android.instagram.InstagramSession;
+
 
 /**
  * Created by Hien on 5/6/2017.
@@ -83,6 +88,7 @@ public class Utils {
     public static final String DIR_APP_NAME = "repost_for_ig";
     public static Activity currentActivity = null;
     public static String userAgent = "Instagram 8.0.0 Android (18/4.3; 320dpi; 720x1280; Xiaomi; HM 1SW; armani; qcom; en_US)";
+
     public static int getScreenWidth() {
         return Resources.getSystem().getDisplayMetrics().widthPixels;
     }
@@ -119,7 +125,6 @@ public class Utils {
         float dp = px / ((float) metrics.densityDpi / DisplayMetrics.DENSITY_DEFAULT);
         return dp;
     }
-
 
 
     public static void hideKeyboard(final View view) {
@@ -198,6 +203,7 @@ public class Utils {
         }
         return false;
     }
+
     public static boolean checkUserExist(ArrayList<User> list, User user) {
         if (list.size() == 0) return false;
         for (User mUser : list) {
@@ -206,7 +212,7 @@ public class Utils {
         return false;
     }
 
-    public static ArrayList<Media> getFilterMediaUser(ArrayList<Media> list, User user){
+    public static ArrayList<Media> getFilterMediaUser(ArrayList<Media> list, User user) {
         ArrayList<Media> mediaArrayList = new ArrayList<>();
         for (Media item : list) {
             if (item.getUser().getId().equalsIgnoreCase(user.getId())) {
@@ -216,17 +222,18 @@ public class Utils {
 
         return mediaArrayList;
     }
-    public static void updateUserList(ArrayList<User> list, User user){
-        for (int i = 0 ; i < list.size(); i++){
-            if(list.get(i).getId().equals(user.getId())){
-                list.set(i,user);
+
+    public static void updateUserList(ArrayList<User> list, User user) {
+        for (int i = 0; i < list.size(); i++) {
+            if (list.get(i).getId().equals(user.getId())) {
+                list.set(i, user);
                 break;
             }
         }
     }
 
-    public static void setUserForMedia(ArrayList<User> list, Media media){
-        if(list.size() > 0){
+    public static void setUserForMedia(ArrayList<User> list, Media media) {
+        if (list.size() > 0) {
             for (User mUser : list) {
                 if (mUser.getId().equals(media.getUser().getId())) {
                     media.setUser(mUser);
@@ -236,12 +243,12 @@ public class Utils {
         }
     }
 
-    public static PointF mapPoint(PointF pointF, float scaleFactorX, float scaleFactorY){
+    public static PointF mapPoint(PointF pointF, float scaleFactorX, float scaleFactorY) {
        /* Matrix mat = new Matrix();
         mat.postScale(scaleFactorX,scaleFactorY);
         float pts[] = {pointF.x, pointF.y};
         mat.mapPoints(pts);*/
-        return new PointF( pointF.x * scaleFactorX, pointF.y * scaleFactorY);
+        return new PointF(pointF.x * scaleFactorX, pointF.y * scaleFactorY);
     }
 
     public static int randInt(int min, int max) {
@@ -261,8 +268,8 @@ public class Utils {
         return randomNum;
     }
 
-    public static int roundNumber(double x){
-        return (int)Math.ceil(x);
+    public static int roundNumber(double x) {
+        return (int) Math.ceil(x);
     }
 
 
@@ -270,7 +277,7 @@ public class Utils {
      * Used to scroll to the given view.
      *
      * @param scrollViewParent Parent ScrollView
-     * @param view View to which we need to scroll.
+     * @param view             View to which we need to scroll.
      */
     public static void scrollToView(final NestedScrollView scrollViewParent, final View view) {
         // Get deepChild Offset
@@ -318,7 +325,7 @@ public class Utils {
         return (time / DateUtils.MINUTE_IN_MILLIS) + " min.";
     }
 
-    public static void showImage(Context mContext,String url, ImageView imv){
+    public static void showImage(Context mContext, String url, ImageView imv) {
         Glide.with(mContext).load(url)
                 .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                 .crossFade()
@@ -345,9 +352,11 @@ public class Utils {
             return false;
         }
     }
+
     public static boolean checkInstagramInstalled(Context act) {
         return checkAppInstalled(act, "com.instagram.android");
     }
+
     public static void showToast(final Activity act, final String msg) {
         act.runOnUiThread(new Runnable() {
             public void run() {
@@ -355,6 +364,7 @@ public class Utils {
             }
         });
     }
+
     public static void showPhotoInInstagram(Context act, String s) {
         if (checkInstagramInstalled(act)) {
             Intent ss = new Intent("android.intent.action.VIEW", Uri.parse(s));
@@ -369,6 +379,7 @@ public class Utils {
         }
         showToast((Activity) act, act.getString(R.string.error_install_instagram));
     }
+
     public static Media getMediaBundle(String json) {
         Media media = null;
         Gson gson = new Gson();
@@ -376,9 +387,9 @@ public class Utils {
         return media;
     }
 
-    public static void openRepostScreen(Context context,Media media){
+    public static void openRepostScreen(Context context, Media media) {
         Intent t = new Intent(context, RepostActivity.class);
-        t.putExtra(Consts.PARAM_MEDIA,media.toJson());
+        t.putExtra(Consts.PARAM_MEDIA, media.toJson());
         context.startActivity(t);
     }
 
@@ -392,6 +403,7 @@ public class Utils {
         }
         return DATA_PATH;
     }
+
     public static void copyToClipBoard(final Activity act, final String libelle, final String textToCopy) {
         act.runOnUiThread(new Runnable() {
             public void run() {
@@ -471,26 +483,10 @@ public class Utils {
             Log.v("grokkingandroid", "file " + path + " was scanned seccessfully: " + uri);
         }
     }
+
     private static Instagram mInstagram;
     private static InstagramSession mInstagramSession;
-    public static InstagramSession getInstagramSession(Activity act) {
-        if (mInstagram == null) {
-            mInstagram = new Instagram(act,
-                    BuildConfig.CONSUMER_KEY, BuildConfig.CONSUMER_SECRET, BuildConfig.CALLBACK_URL);
-        }
-        if (mInstagramSession == null) {
-            mInstagramSession = mInstagram.getSession();
-        }
-        return mInstagramSession;
-    }
 
-    public static Instagram getInstagram(Activity act, boolean getNew) {
-        if (mInstagram == null || getNew) {
-            mInstagram = new Instagram(act,
-                    BuildConfig.CONSUMER_KEY, BuildConfig.CONSUMER_SECRET, BuildConfig.CALLBACK_URL);
-        }
-        return mInstagram;
-    }
 
     // You may uncomment next line if using Android Annotations library, otherwise just be sure to run it in on the UI thread
 // @UiThread
@@ -518,5 +514,41 @@ public class Utils {
         static String getDefaultUserAgent(Context context) {
             return WebSettings.getDefaultUserAgent(context);
         }
+    }
+    public static InstagramSession getInstagramSession(Activity act) {
+        if (mInstagram == null) {
+            mInstagram = new Instagram(act,
+                    BuildConfig.CONSUMER_KEY, BuildConfig.CONSUMER_SECRET, BuildConfig.CALLBACK_URL);
+        }
+        if (mInstagramSession == null) {
+            mInstagramSession = mInstagram.getSession();
+        }
+        return mInstagramSession;
+    }
+
+    public static Instagram getInstagram(Activity act, boolean getNew) {
+        if (mInstagram == null || getNew) {
+            mInstagram = new Instagram(act,
+                    BuildConfig.CONSUMER_KEY, BuildConfig.CONSUMER_SECRET, BuildConfig.CALLBACK_URL);
+        }
+        return mInstagram;
+    }
+    public static void writeToFile(String filename, String content) {
+    }
+
+    public static Media getMediaFromStoryInfo(StoryInfo storyInfo){
+        Media media = new Media();
+        media.setId(storyInfo.id);
+
+        Images images = new Images();
+        StandardResolution standardResolution = new StandardResolution();
+        standardResolution.setUrl(storyInfo.photoHQ);
+        images.setStandardResolution(standardResolution);
+        media.setImages(images);
+
+        Videos videos = new Videos();
+
+
+        return media;
     }
 }

@@ -6,12 +6,14 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
 
+import com.crashlytics.android.Crashlytics;
 import com.franmontiel.persistentcookiejar.ClearableCookieJar;
 import com.franmontiel.persistentcookiejar.PersistentCookieJar;
 import com.franmontiel.persistentcookiejar.cache.SetCookieCache;
 import com.franmontiel.persistentcookiejar.persistence.SharedPrefsCookiePersistor;
 import com.sns.repost.utils.AppSettings;
 
+import io.fabric.sdk.android.Fabric;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import okhttp3.OkHttpClient;
@@ -30,6 +32,7 @@ public class RepostApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        Fabric.with(this, new Crashlytics());
         appSettings = new AppSettings(this);
         instance = this;
         this.cookieJar = new PersistentCookieJar(new SetCookieCache(), new SharedPrefsCookiePersistor(this));

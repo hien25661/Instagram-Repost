@@ -12,16 +12,16 @@ import java.util.List;
 
 public class Media extends BaseModel{
     private String type = "";
-    private ArrayList<LoadLikedResponse.UsersInPhoto> usersinphoto = new ArrayList<>();
+    private ArrayList<UsersInPhoto> usersinphoto = new ArrayList<>();
     private ArrayList<String> tags = new ArrayList<>();
-    private LoadLikedResponse.Comments comments;
-    private LoadLikedResponse.Caption caption;
-    private LoadLikedResponse.Likes likes;
+    private Comments comments;
+    private Caption caption;
+    private Likes likes;
     private String link = "";
     private String created_time = "";
 
-    private LoadLikedResponse.Images images;
-    private LoadLikedResponse.Videos videos;
+    private Images images;
+    private Videos videos;
     private String id;
     private String location = "";
 
@@ -45,11 +45,11 @@ public class Media extends BaseModel{
         this.type = type;
     }
 
-    public ArrayList<LoadLikedResponse.UsersInPhoto> getUsersinphoto() {
+    public ArrayList<UsersInPhoto> getUsersinphoto() {
         return usersinphoto;
     }
 
-    public void setUsersinphoto(ArrayList<LoadLikedResponse.UsersInPhoto> usersinphoto) {
+    public void setUsersinphoto(ArrayList<UsersInPhoto> usersinphoto) {
         this.usersinphoto = usersinphoto;
     }
 
@@ -61,29 +61,29 @@ public class Media extends BaseModel{
         this.tags = tags;
     }
 
-    public LoadLikedResponse.Comments getComments() {
+    public Comments getComments() {
         return comments;
     }
 
-    public void setComments(LoadLikedResponse.Comments comments) {
+    public void setComments(Comments comments) {
         this.comments = comments;
     }
 
 
-    public LoadLikedResponse.Caption getCaption() {
+    public Caption getCaption() {
         return caption;
     }
 
-    public void setCaption(LoadLikedResponse.Caption caption) {
+    public void setCaption(Caption caption) {
         this.caption = caption;
     }
 
 
-    public LoadLikedResponse.Likes getLikes() {
+    public Likes getLikes() {
         return likes;
     }
 
-    public void setLikes(LoadLikedResponse.Likes likes) {
+    public void setLikes(Likes likes) {
         this.likes = likes;
     }
 
@@ -103,19 +103,19 @@ public class Media extends BaseModel{
         this.created_time = created_time;
     }
 
-    public LoadLikedResponse.Images getImages() {
+    public Images getImages() {
         return images;
     }
 
-    public void setImages(LoadLikedResponse.Images images) {
+    public void setImages(Images images) {
         this.images = images;
     }
 
-    public LoadLikedResponse.Videos getVideos() {
+    public Videos getVideos() {
         return videos;
     }
 
-    public void setVideos(LoadLikedResponse.Videos videos) {
+    public void setVideos(Videos videos) {
         this.videos = videos;
     }
 

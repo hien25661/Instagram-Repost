@@ -7,9 +7,8 @@ import android.support.annotation.Nullable;
 import com.sns.repost.BaseActivity;
 import com.sns.repost.R;
 import com.sns.repost.RepostApplication;
-import com.sns.repost.helpers.callback.SimpleCallback;
-import com.sns.repost.models.User;
 import com.sns.repost.utils.Utils;
+
 
 import net.londatiga.android.instagram.Instagram;
 import net.londatiga.android.instagram.InstagramSession;

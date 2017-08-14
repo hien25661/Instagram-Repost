@@ -2,12 +2,19 @@ package com.sns.repost.activities;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Build;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
+import android.util.DisplayMetrics;
+import android.util.Log;
+import android.view.View;
+import android.widget.Toast;
 
 import com.marshalchen.ultimaterecyclerview.UltimateRecyclerView;
 import com.sns.repost.BaseActivity;
@@ -15,6 +22,7 @@ import com.sns.repost.BuildConfig;
 import com.sns.repost.R;
 import com.sns.repost.RepostApplication;
 import com.sns.repost.adapters.MediaAdapter;
+import com.sns.repost.api.DownloadFeed;
 import com.sns.repost.dialog.LoginInstagramDialog;
 import com.sns.repost.helpers.callback.SimpleCallback;
 import com.sns.repost.helpers.callback.SuccessfullCallback;
@@ -28,15 +36,23 @@ import com.sns.repost.utils.StringUtils;
 import com.sns.repost.utils.Utils;
 
 import net.londatiga.android.instagram.Instagram;
+import net.londatiga.android.instagram.InstagramRequest;
 import net.londatiga.android.instagram.InstagramSession;
 import net.londatiga.android.instagram.InstagramUser;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+import org.json.JSONTokener;
+
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
 
 public class MainActivity extends BaseActivity {
     @Bind(R.id.rcv_feed)
@@ -110,10 +126,11 @@ public class MainActivity extends BaseActivity {
 
     private void loadData() {
         this.mInstagramSession = Utils.getInstagramSession(this);
+
         if (appSettings.getInstagramAccessToken().equals("") || appSettings.getInstagramAccessToken()
                 .equals(BuildConfig.DEFAULT_TOKEN)) {
             //Utils.getInstagram(MainActivity.this, true).authorize(MainActivity.this.mAuthListener);
-            Intent t = new Intent(MainActivity.this,RepostLoginActivity.class);
+            Intent t = new Intent(MainActivity.this, RepostLoginActivity.class);
             startActivity(t);
             finish();
             /*loginInstagramDialog.show();
@@ -197,12 +214,24 @@ public class MainActivity extends BaseActivity {
             }
         });
         Utils.currentActivity = MainActivity.this;
-        mediaLoader.loadPopular(new SuccessfullCallback() {
-            @Override
-            public void success(Object... params) {
-
-            }
-        });
+//        mediaLoader.loadPopular(new SuccessfullCallback() {
+//            @Override
+//            public void success(Object... params) {
+//                mediaList = (ArrayList<Media>) params[0];
+//                Handler mainHandler = new Handler(Looper.getMainLooper());
+//                mainHandler.post(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        // code to interact with UI
+//                        mediaAdapter = new MediaAdapter(mediaList);
+//                        mediaAdapter.setmAct(MainActivity.this);
+//                        rcvMedia.setAdapter(mediaAdapter);
+//                        rcvMedia.setRefreshing(false);
+//                    }
+//                });
+//
+//            }
+//        });
     }
 
     private void setupLoadMoreMediaList() {
@@ -210,22 +239,51 @@ public class MainActivity extends BaseActivity {
         rcvMedia.setOnLoadMoreListener(new UltimateRecyclerView.OnLoadMoreListener() {
             @Override
             public void loadMore(int itemsCount, int maxLastVisiblePosition) {
-                if (StringUtils.isNotEmpty(mediaLoader.getNextUrl())) {
-                    mediaLoader.loadMoreLike(mediaLoader.getNextUrl(), new SuccessfullCallback() {
+//                if (StringUtils.isNotEmpty(mediaLoader.getNextUrl())) {
+//                    mediaLoader.loadMoreLike(mediaLoader.getNextUrl(), new SuccessfullCallback() {
+//                        @Override
+//                        public void success(Object... params) {
+//                            List<Media> mListMore = (List<Media>) params[0];
+//                            if (mListMore != null && mListMore.size() > 0) {
+//                                if (mListMore != null && mListMore.size() > 0) {
+//                                    for (Media media : mListMore) {
+//                                        if (mediaAdapter.getMediaList() != null && !checkMediaContain(mediaAdapter.getMediaList(), media)) {
+//                                            mediaAdapter.insert(media, mediaAdapter.getAdapterItemCount());
+//                                        }
+//                                    }
+//                                } else {
+//                                }
+//                            } else {
+//                            }
+//                        }
+//                    });
+//                } else {
+//                    rcvMedia.disableLoadmore();
+//                }
+                if (StringUtils.isNotEmpty(mediaLoader.getmMinMediaId())) {
+                    mediaLoader.loadPopular(new SuccessfullCallback() {
                         @Override
                         public void success(Object... params) {
-                            List<Media> mListMore = (List<Media>) params[0];
-                            if (mListMore != null && mListMore.size() > 0) {
-                                if (mListMore != null && mListMore.size() > 0) {
-                                    for (Media media : mListMore) {
-                                        if (mediaAdapter.getMediaList() != null && !checkMediaContain(mediaAdapter.getMediaList(), media)) {
-                                            mediaAdapter.insert(media, mediaAdapter.getAdapterItemCount());
+                            final List<Media> mListMore = (List<Media>) params[0];
+                            Handler mainHandler = new Handler(Looper.getMainLooper());
+                            mainHandler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    // code to interact with UI
+                                    if (mListMore != null && mListMore.size() > 0) {
+                                        if (mListMore != null && mListMore.size() > 0) {
+                                            for (Media media : mListMore) {
+                                                if (mediaAdapter.getMediaList() != null && !checkMediaContain(mediaAdapter.getMediaList(), media)) {
+                                                    mediaAdapter.insert(media, mediaAdapter.getAdapterItemCount());
+                                                }
+                                            }
+                                        } else {
                                         }
+                                    } else {
                                     }
-                                } else {
                                 }
-                            } else {
-                            }
+                            });
+
                         }
                     });
                 } else {
@@ -265,5 +323,4 @@ public class MainActivity extends BaseActivity {
         Intent t = new Intent(this, MyLikeActivity.class);
         startActivity(t);
     }
-
 }

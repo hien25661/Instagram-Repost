@@ -30,6 +30,7 @@ import com.sns.repost.helpers.customview.CircleTransform;
 import com.sns.repost.helpers.customview.VideoPlayer;
 import com.sns.repost.models.Media;
 import com.sns.repost.models.User;
+import com.sns.repost.models.UsersInPhoto;
 import com.sns.repost.services.response.LoadLikedResponse;
 import com.sns.repost.utils.Consts;
 import com.sns.repost.utils.StringUtils;
@@ -277,10 +278,10 @@ public class DetailMediaActivity extends BaseActivity {
         this.startActivity(t);
     }
 
-    private User checkUserExist(ArrayList<LoadLikedResponse.UsersInPhoto> usersInPhotos, String userName) {
+    private User checkUserExist(ArrayList<UsersInPhoto> usersInPhotos, String userName) {
         User user = null;
         if (usersInPhotos == null || usersInPhotos.size() == 0) return user;
-        for (LoadLikedResponse.UsersInPhoto usersInPhoto : usersInPhotos) {
+        for (UsersInPhoto usersInPhoto : usersInPhotos) {
             if (usersInPhoto.getUser() != null) {
                 String k = "@" + usersInPhoto.getUser().getUsername();
                 if (userName.equals(k)) {

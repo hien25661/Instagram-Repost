@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta id="viewport" name="viewport" content="width=device-width, user-scalable=no, initial-scale=1, minimum-scale=1, maximum-scale=1">
+        <title>Log in — Instagram</title>
+        <link rel="stylesheet" href="https://instagramstatic-a.akamaihd.net/bluebar/f7ca2cb/cache/styles/fonts.css">
+        <link href="dialog-main.css" type="text/css" rel="stylesheet" />
+    </head>
+    <body class="p-dialog oauth-login">
+        <div class="root">
+            <section class="dialog-outer">
+                <div id="login-dialog" class="dialog">
+                    <header>
+                        <h1 >Login</h1>
+                    </header>
+                    <div class="dialog-main">
+                        <div id="alerts" class="alerts">
+                        </div>
+                        <form method="GET" id="login-form" class="adjacent" action="ios://onLogin">
+                            <p id="pusername"> <label for="id_username">Username:</label> <input name="username" maxlength="30" autocapitalize="off" autocorrect="off" type="text" id="id_username" /> </p>
+                            <p id="ppassword"> <label for="id_password">Password:</label> <input autocapitalize="off" autocorrect="off" type="password" name="password" id="id_password" /> </p>
+                            <p class="form-actions"> <a href="https://instagram.com/accounts/password/reset/">Forgot your password？</a> <input type="submit" class="button-green" value="Log in" /> </p>
+                        </form> 
+                    </div> 
+                </div> 
+                  <br/><br/>    
+          </section>
+      
+        </div> 
+      
+    </body>
+    
+<script type="text/javaScript">
+    var pusername = document.getElementById("pusername");
+    var ppassword = document.getElementById("ppassword");
+    var palerts = document.getElementById("alerts");
+    
+    function UsernameWarning()
+    {
+        var error = document.createElement("ul");
+        error.className = "errorlist";
+        pusername.parentNode.insertBefore(error, pusername);
+    }
+    function PasswordWarning()
+    {
+        var error = document.createElement("ul");
+        error.className = "errorlist";
+        ppassword.parentNode.insertBefore(error, ppassword);
+    }
+    function LoginError(errorMessage)
+    {
+        var error = document.createElement("p");
+        error.className = "alert-red";
+        error.innerHTML = errorMessage;
+        palerts.appendChild(error);
+    }
+
+</script>
+
+<script type="text/javaScript">
+        function getDialogTop(){
+            o = document.getElementById("login-dialog");
+            oTop = o.offsetTop;
+            while(o.offsetParent!=null)
+            {
+                oParent = o.offsetParent;
+                oTop += oParent.offsetTop;
+                o = oParent;
+            }
+            return oTop;
+        }
+    
+    function getDialogLeft(){
+        o = document.getElementById("login-dialog");
+        oLeft = o.offsetLeft;
+        while(o.offsetParent!=null) {
+            oParent = o.offsetParent;
+            oLeft += oParent.offsetLeft;
+            o = oParent;
+        }
+        return oLeft;
+    }
+    
+    function getDialogWidth(){
+        return document.getElementById("login-dialog").offsetWidth;
+    }
+    
+    function getDialogHeight(){
+        return document.getElementById("login-dialog").offsetHeight;
+    }
+
+    function setUsername(username){
+        var name = document.getElementById("id_username");
+        name.value = username;
+    }
+
+    function setPlaceholderUsername(username){
+        document.getElementById("login-form").getElementsByTagName("p")[0].getElementsByTagName("label")[0].innerHTML = username;
+    }
+
+    function setPlaceholderPassword(password){
+        document.getElementById("login-form").getElementsByTagName("p")[1].getElementsByTagName("label")[0].innerHTML = password;
+    }
+
+    function setPlaceholderForgotPassword(forgot){
+        document.getElementById("login-form").getElementsByTagName("p")[2].getElementsByTagName("a")[0].innerHTML = forgot;
+    }
+
+    function setPlaceholderLogin(login){
+        document.getElementById("login-form").getElementsByTagName("p")[2].getElementsByTagName("input")[0].value = login;
+    }
+
+</script>
+</html>
