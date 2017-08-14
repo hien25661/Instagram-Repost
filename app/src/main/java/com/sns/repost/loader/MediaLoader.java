@@ -171,6 +171,7 @@ public class MediaLoader {
                                 StoryInfo si = new StoryInfo();
                                 String type = jsonData.getJSONObject(i).getString("media_type");
                                 String jsonLikes = jsonData.getJSONObject(i).getString("like_count");
+                                boolean isLiked = jsonData.getJSONObject(i).getBoolean("has_liked");
                                 JSONObject jsonUser = jsonData.getJSONObject(i).getJSONObject("user");
                                 maxId = jsonData.getJSONObject(i).getString("id");
                                 String link = "https://www.instagram.com/p/" + jsonData.getJSONObject(i).getString("code") + "/";
@@ -271,7 +272,7 @@ public class MediaLoader {
 
                                 Likes likes = new Likes();
                                 likes.setCount(Integer.parseInt(si.likesCount));
-                                media.isLiked = false;
+                                media.isLiked = isLiked;
                                 media.setLikes(likes);
 
                                 User user = new User();

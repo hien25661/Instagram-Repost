@@ -222,7 +222,7 @@ public class Util {
                     }
                     Util.showToast(act, act.getString(R.string.copy_caption));
                 } catch (IllegalStateException e4) {
-                    Log.e("EZRepost", "IllegalStateException raised when accessing clipboard.");
+                    Log.e("SNSRepost", "IllegalStateException raised when accessing clipboard.");
                 }
             }
         });
@@ -248,7 +248,7 @@ public class Util {
     }
 
     public static String getTimestamp() {
-        return new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date()) + "_EZRepost";
+        return new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date()) + "_SNSRepost";
     }
 
     public static String getAppDataPath() {

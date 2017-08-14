@@ -15,7 +15,7 @@ import com.google.gson.Gson;
 import com.sns.repost.R;
 import com.sns.repost.RepostApplication;
 import com.sns.repost.utils.Constants;
-import com.sns.repost.utils.EZRepostManager;
+import com.sns.repost.utils.SNSRepostManager;
 import com.sns.repost.utils.LoggedInUser;
 import com.sns.repost.utils.LoginUtil;
 import com.sns.repost.utils.Utils;
@@ -106,7 +106,7 @@ public class InstagramWebView extends WebViewClient {
 
     private void processLoginResponse(LoginUtil paramLoginUtil) {
         if (paramLoginUtil.getStatus().equals("ok")) {
-            EZRepostManager localRapidRepostManager = new EZRepostManager(this.mActivity.getApplication());
+            SNSRepostManager localRapidRepostManager = new SNSRepostManager(this.mActivity.getApplication());
             LoggedInUser localLoggedInUser = paramLoginUtil.getLoggedInUser();
             localRapidRepostManager.storeAccessToken("loggedin", localLoggedInUser.getPk() + "", localLoggedInUser.getUsername(), localLoggedInUser.getFullName(), localLoggedInUser.getProfilePicUrl());
             this.mDialog.dismiss();

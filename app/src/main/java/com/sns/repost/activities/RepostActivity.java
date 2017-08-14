@@ -196,7 +196,7 @@ public class RepostActivity extends BaseActivity {
         if (this.mBitmapResult != null) {
             this.mediaImage.buildDrawingCache();
             new SampleSaver(this, this.mBitmapResult, new SimpleDateFormat("yyyyMMdd_HHmmss")
-                    .format(new Date()) + "_EZRepost", Boolean.valueOf(spyMode), Boolean.valueOf(repost))
+                    .format(new Date()) + "_SNS_REPOST", Boolean.valueOf(spyMode), Boolean.valueOf(repost))
                     .execute(new Integer[]{Integer.valueOf(0)});
             return;
         }
@@ -204,7 +204,7 @@ public class RepostActivity extends BaseActivity {
     }
 
     private String getCaption() {
-        return "#EzRepost @" + media.getUser().getUsername() + " " + "with" + " @repostigapp\n\n" + media.getCaption().getText();
+        return "#SNSRepost @" + media.getUser().getUsername() + " " + "with" + " @repostigapp\n\n" + media.getCaption().getText();
     }
 
 

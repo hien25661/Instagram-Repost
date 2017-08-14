@@ -25,9 +25,11 @@ import com.sns.repost.R;
 import com.sns.repost.adapters.MediaAdapter;
 import com.sns.repost.dialog.DialogPreview;
 import com.sns.repost.helpers.PlaceHolderDrawableHelper;
+import com.sns.repost.helpers.callback.SimpleCallback;
 import com.sns.repost.helpers.callback.SuccessfullCallback;
 import com.sns.repost.helpers.customview.CircleTransform;
 import com.sns.repost.helpers.customview.VideoPlayer;
+import com.sns.repost.loader.MediaLoader;
 import com.sns.repost.models.Media;
 import com.sns.repost.models.User;
 import com.sns.repost.models.UsersInPhoto;
@@ -79,14 +81,18 @@ public class DetailMediaActivity extends BaseActivity {
     View viewSpace;
     @Bind(R.id.imvBrowseInstagram)
     ImageView imvBrowseInstagram;
+    @Bind(R.id.imvLike)
+    ImageView imvLike;
 
     private Media media;
+    private MediaLoader mediaLoader;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail_media);
         ButterKnife.bind(this);
+        mediaLoader = MediaLoader.getInstance();
         media = Utils.getMediaBundle(getIntent().getStringExtra(Consts.PARAM_MEDIA));
         initView();
         loadData();
@@ -116,6 +122,11 @@ public class DetailMediaActivity extends BaseActivity {
         tvCaption.setMovementMethod(LinkMovementMethod.getInstance());
         tvCaption.setGravity(Gravity.TOP | Gravity.LEFT);
 
+        if(media.isLiked){
+            imvLike.setImageResource(R.mipmap.liked);
+        }else {
+            imvLike.setImageResource(R.mipmap.ic_like);
+        }
 
         if (media.getLikes() != null && media.getLikes().getCount() != null) {
             tvNumberLike.setText(String.format(Locale.US, "%s likes",
@@ -304,5 +315,44 @@ public class DetailMediaActivity extends BaseActivity {
     @OnClick(R.id.btnRepost)
     public void repost() {
         Utils.openRepostScreen(this, media);
+    }
+    @OnClick(R.id.imvLike)
+    public void actionLike(){
+        if(!media.isLiked){
+            media.isLiked = true;
+            media.getLikes().setCount(media.getLikes().getCount() + 1);
+            mediaLoader.likeMedia(media.getId(), new SimpleCallback() {
+                @Override
+                public void success(Object... params) {
+
+                }
+
+                @Override
+                public void failed() {
+
+                }
+            });
+            tvNumberLike.setText(String.format(Locale.US, "%s likes",
+                    NumberFormat.getInstance().format(media.getLikes().getCount())));
+            imvLike.setImageResource(R.mipmap.liked);
+
+        }else {
+            media.isLiked = false;
+            media.getLikes().setCount(media.getLikes().getCount() - 1);
+            mediaLoader.removeLikeMedia(media.getId(), new SimpleCallback() {
+                @Override
+                public void success(Object... params) {
+
+                }
+
+                @Override
+                public void failed() {
+
+                }
+            });
+            tvNumberLike.setText(String.format(Locale.US, "%s likes",
+                    NumberFormat.getInstance().format(media.getLikes().getCount())));
+            imvLike.setImageResource(R.mipmap.ic_like);
+        }
     }
 }

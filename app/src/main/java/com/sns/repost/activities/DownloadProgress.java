@@ -106,6 +106,6 @@ public class DownloadProgress extends Activity {
     }
 
     private String getCaption() {
-        return "#EzRepost @" + this.mUsername + " " + "with" + " @repostigapp\n\n" + this.mCaption;
+        return "#SNSRepost @" + this.mUsername + " " + "with" + " @repost\n\n" + this.mCaption;
     }
 }

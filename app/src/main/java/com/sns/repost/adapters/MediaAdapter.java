@@ -46,9 +46,11 @@ import com.sns.repost.activities.UserPageActivity;
 import com.sns.repost.dialog.DialogPreview;
 import com.sns.repost.helpers.EventBusUtils;
 import com.sns.repost.helpers.PlaceHolderDrawableHelper;
+import com.sns.repost.helpers.callback.SimpleCallback;
 import com.sns.repost.helpers.callback.SuccessfullCallback;
 import com.sns.repost.helpers.customview.CircleTransform;
 import com.sns.repost.helpers.customview.VideoPlayer;
+import com.sns.repost.loader.MediaLoader;
 import com.sns.repost.loader.UserLoader;
 import com.sns.repost.models.Media;
 import com.sns.repost.models.User;
@@ -86,6 +88,7 @@ public class MediaAdapter extends UltimateViewAdapter {
     private static final int MAX_CHAR = 200;
     private int numColumn = 3;
     private Activity mAct;
+    MediaLoader mediaLoader;
 
     public boolean isUserSelf() {
         return isUserSelf;
@@ -134,6 +137,7 @@ public class MediaAdapter extends UltimateViewAdapter {
     public void setShowActionHidden(boolean showActionHidden) {
         isShowActionHidden = showActionHidden;
     }
+
     public ArrayList<Media> getMediaList() {
         return mediaList;
     }
@@ -163,6 +167,7 @@ public class MediaAdapter extends UltimateViewAdapter {
         ViewHolder vh = new ViewHolder(v);
         mContext = v.getContext();
         userLoader = UserLoader.getInstance();
+        mediaLoader = MediaLoader.getInstance();
         return vh;
     }
 
@@ -182,7 +187,7 @@ public class MediaAdapter extends UltimateViewAdapter {
             final Media media = mediaList.get(position);
             int maxCaptionHeight = 0;
 
-            if(isUserFeed){
+            if (isUserFeed) {
                 ((ViewHolder) holder).viewHeader.setVisibility(View.GONE);
                 ((ViewHolder) holder).viewBottom.setVisibility(View.GONE);
                 ((ViewHolder) holder).viewCaption.setVisibility(View.GONE);
@@ -221,8 +226,8 @@ public class MediaAdapter extends UltimateViewAdapter {
                     int videoNativeWidth = media.getVideos().getStandardResolution().getWidth();
                     int videoNativeHeight = media.getVideos().getStandardResolution().getHeight();
                     int screenWidth = Utils.getScreenWidth();
-                    if(isUserFeed){
-                        screenWidth = (int) (Utils.getScreenWidth()/(getNumColumn()));
+                    if (isUserFeed) {
+                        screenWidth = (int) (Utils.getScreenWidth() / (getNumColumn()));
                     }
                     if (videoNativeWidth != 0 && videoNativeHeight != 0) {
                         float ratio = (float) videoNativeHeight / videoNativeWidth;
@@ -245,6 +250,55 @@ public class MediaAdapter extends UltimateViewAdapter {
                     ((ViewHolder) holder).mediaVideo.setVisibility(View.GONE);
                 }
             }
+
+            if (media.isLiked) {
+                ((ViewHolder) holder).imvLike.setImageResource(R.mipmap.liked);
+            } else {
+                ((ViewHolder) holder).imvLike.setImageResource(R.mipmap.ic_like);
+            }
+            ((ViewHolder) holder).imvLike.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (!media.isLiked) {
+                        media.isLiked = true;
+                        media.getLikes().setCount(media.getLikes().getCount() + 1);
+                        mediaLoader.likeMedia(media.getId(), new SimpleCallback() {
+                            @Override
+                            public void success(Object... params) {
+
+                            }
+
+                            @Override
+                            public void failed() {
+
+                            }
+                        });
+                        ((ViewHolder) holder).imvLike.setImageResource(R.mipmap.liked);
+                        ((ViewHolder) holder).tvNumberLike.setText(String.format(Locale.US, "%s likes",
+                                NumberFormat.getInstance().format(media.getLikes().getCount())));
+                        //  notifyItemChanged(position);
+                    } else {
+                        media.isLiked = false;
+                        media.getLikes().setCount(media.getLikes().getCount() - 1);
+                        mediaLoader.removeLikeMedia(media.getId(), new SimpleCallback() {
+                            @Override
+                            public void success(Object... params) {
+
+                            }
+
+                            @Override
+                            public void failed() {
+
+                            }
+                        });
+                        // notifyItemChanged(position);
+                        ((ViewHolder) holder).imvLike.setImageResource(R.mipmap.ic_like);
+                        ((ViewHolder) holder).tvNumberLike.setText(String.format(Locale.US, "%s likes",
+                                NumberFormat.getInstance().format(media.getLikes().getCount())));
+                    }
+                }
+            });
+
             Glide.with(mContext).load(media.getUser().getProfilePicture())
                     .transform(new CircleTransform(mContext))
                     .diskCacheStrategy(DiskCacheStrategy.SOURCE)
@@ -259,9 +313,9 @@ public class MediaAdapter extends UltimateViewAdapter {
             ((ViewHolder) holder).rltMedia.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if(isUserFeed){
+                    if (isUserFeed) {
                         openDetailMedia(media);
-                    }else {
+                    } else {
                         DialogPreview dialogPreview = new DialogPreview(mContext);
                         dialogPreview.setMedia(media);
                         dialogPreview.show();
@@ -272,7 +326,7 @@ public class MediaAdapter extends UltimateViewAdapter {
                 @Override
                 public void onClick(View v) {
                     Intent t = new Intent(mContext, UserPageActivity.class);
-                    t.putExtra(Consts.USER_ID,media.getUser().getId());
+                    t.putExtra(Consts.USER_ID, media.getUser().getId());
                     mContext.startActivity(t);
                 }
             });
@@ -280,14 +334,14 @@ public class MediaAdapter extends UltimateViewAdapter {
             ((ViewHolder) holder).imvBrowseInstagram.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Utils.showPhotoInInstagram(mAct,media.getLink());
+                    Utils.showPhotoInInstagram(mAct, media.getLink());
                 }
             });
 
             ((ViewHolder) holder).btnRepost.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Utils.openRepostScreen(mContext,media);
+                    Utils.openRepostScreen(mContext, media);
                 }
             });
         }
@@ -339,6 +393,9 @@ public class MediaAdapter extends UltimateViewAdapter {
 
         @Bind(R.id.imvBrowseInstagram)
         ImageView imvBrowseInstagram;
+
+        @Bind(R.id.imvLike)
+        ImageView imvLike;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -472,20 +529,22 @@ public class MediaAdapter extends UltimateViewAdapter {
             }
         }
     }
-    private void openTagScreen(String tagName){
-        Intent t = new Intent(mContext,TagFeedActivity.class);
-        t.putExtra(Consts.PARAM_TAG_NAME,tagName.replaceAll("#",""));
-        mContext.startActivity(t);
-    }
-    private void openUserFeedScreen(User user){
-        Intent t = new Intent(mContext,UserPageActivity.class);
-        t.putExtra(Consts.USER_ID,user.getId());
+
+    private void openTagScreen(String tagName) {
+        Intent t = new Intent(mContext, TagFeedActivity.class);
+        t.putExtra(Consts.PARAM_TAG_NAME, tagName.replaceAll("#", ""));
         mContext.startActivity(t);
     }
 
-    private void openDetailMedia(Media media){
-        Intent t = new Intent(mContext,DetailMediaActivity.class);
-        t.putExtra(Consts.PARAM_MEDIA,media.toJson());
+    private void openUserFeedScreen(User user) {
+        Intent t = new Intent(mContext, UserPageActivity.class);
+        t.putExtra(Consts.USER_ID, user.getId());
+        mContext.startActivity(t);
+    }
+
+    private void openDetailMedia(Media media) {
+        Intent t = new Intent(mContext, DetailMediaActivity.class);
+        t.putExtra(Consts.PARAM_MEDIA, media.toJson());
         mContext.startActivity(t);
     }
 

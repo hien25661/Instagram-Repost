@@ -4,7 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 
-public class EZRepostManager {
+public class SNSRepostManager {
     private static final String API_ACCESS_TOKEN = "new_access_token";
     private static final String API_ID = "id";
     private static final String API_IMAGE_URL = "imgurl";
@@ -14,7 +14,7 @@ public class EZRepostManager {
     private Editor editor = this.sharedPref.edit();
     private SharedPreferences sharedPref;
 
-    public EZRepostManager(Context paramContext) {
+    public SNSRepostManager(Context paramContext) {
         this.sharedPref = paramContext.getSharedPreferences(SHARED, 0);
     }
 
