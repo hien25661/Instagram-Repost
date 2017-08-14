@@ -1,2 +1,2 @@
-include ':app'
+include ':app', ':paper-onboarding'
 include ':library'

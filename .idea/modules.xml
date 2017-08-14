@@ -5,6 +5,7 @@
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/instagram-repost.iml" filepath="$PROJECT_DIR$/instagram-repost.iml" />
       <module fileurl="file://$PROJECT_DIR$/library/library.iml" filepath="$PROJECT_DIR$/library/library.iml" />
+      <module fileurl="file://$PROJECT_DIR$/paper-onboarding/paper-onboarding.iml" filepath="$PROJECT_DIR$/paper-onboarding/paper-onboarding.iml" />
     </modules>
   </component>
 </project>
