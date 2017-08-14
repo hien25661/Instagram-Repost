@@ -20,6 +20,13 @@ public class AppSettings extends SharedPreferencesService{
         return getSettings().getString("InstagramToken", "");
     }
 
+    public void setInstagramCookie(String cookie){
+        this.getSettings().edit().putString("InstagramCookie",cookie).apply();
+    }
+    public String getInstagramCookie(){
+        return getSettings().getString("InstagramCookie", "");
+    }
+
     public void setLogin(boolean isLogin){
         this.getSettings().edit().putBoolean("isLogin",isLogin).apply();
     }

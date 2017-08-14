@@ -20,7 +20,7 @@ import com.sns.repost.utils.LoggedInUser;
 import com.sns.repost.utils.LoginUtil;
 import com.sns.repost.utils.Utils;
 
-import net.londatiga.android.instagram.InstagramDialog;
+import londatiga.android.instagram.InstagramDialog;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;

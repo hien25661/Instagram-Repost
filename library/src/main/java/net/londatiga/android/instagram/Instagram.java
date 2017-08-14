@@ -65,6 +65,11 @@ public class Instagram {
 			}
 
 			@Override
+			public void onCookie(String cookie) {
+				mListener.onCookie(cookie);
+			}
+
+			@Override
 			public void onCancel() {
 			mListener.onCancel();
 				
@@ -186,5 +191,6 @@ public class Instagram {
 		public abstract void onSuccess(InstagramUser user);
 		public abstract void onError(String error);
 		public abstract void onCancel();
+		public abstract void onCookie(String cookie);
 	}
 }

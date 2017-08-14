@@ -3,6 +3,7 @@ package com.sns.repost.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import com.sns.repost.BaseActivity;
 import com.sns.repost.R;
@@ -53,6 +54,12 @@ public class RepostLoginActivity extends BaseActivity {
 
         public void onCancel() {
             Utils.showToast(RepostLoginActivity.this, "May be later");
+        }
+
+        @Override
+        public void onCookie(String cookie) {
+            Log.e("loadPopular","cookie: "+cookie);
+            RepostApplication.getInstance().getAppSettings().setInstagramCookie(cookie);
         }
     }
 

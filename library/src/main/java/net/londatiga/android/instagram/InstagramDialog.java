@@ -129,6 +129,7 @@ public class InstagramDialog extends Dialog {
 	}
 
 	private void setUpWebView() {
+		CookieManager.getInstance().removeAllCookie();
 		mWebView = new WebView(getContext());
 	        
 		mWebView.setVerticalScrollBarEnabled(false);
@@ -166,6 +167,9 @@ public class InstagramDialog extends Dialog {
 	        	
 			if (url.startsWith(mRedirectUri)) {
 				if (url.contains("code")) {
+					String myCookies = CookieManager.getInstance().getCookie("https://www.instagram.com");
+					Log.e("loadPopular",""+myCookies);
+					mListener.onCookie(myCookies);
 					String temp[] = url.split("=");
 					
 					mListener.onSuccess(temp[1]);
@@ -174,7 +178,6 @@ public class InstagramDialog extends Dialog {
 					
 					mListener.onError(temp[temp.length-1]);
 				}
-	        		
 	        	InstagramDialog.this.dismiss();
 	        		
 	        	return true;
@@ -212,8 +215,6 @@ public class InstagramDialog extends Dialog {
 			if (title != null && title.length() > 0) {
 				mTitle.setText(title);
 			}
-			String myCookies = CookieManager.getInstance().getCookie(url);
-			Log.e("loadPopular",""+myCookies);
 			
 			mSpinner.dismiss();
 		}
@@ -223,5 +224,6 @@ public class InstagramDialog extends Dialog {
 		public abstract void onSuccess(String code);
 		public abstract void onCancel();
 		public abstract void onError(String error);
+		public abstract void onCookie(String cookie);
 	}
 }

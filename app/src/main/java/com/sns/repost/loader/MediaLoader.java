@@ -28,6 +28,7 @@ import com.sns.repost.services.response.LikeResponse;
 import com.sns.repost.services.response.LoadLikedResponse;
 import com.sns.repost.utils.Consts;
 import com.sns.repost.utils.StoryInfo;
+import com.sns.repost.utils.Util;
 import com.sns.repost.utils.Utils;
 
 
@@ -41,6 +42,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import londatiga.android.instagram.util.Cons;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import retrofit2.Call;
@@ -137,9 +139,10 @@ public class MediaLoader {
 //                Log.e("loadPopular", ""+response);
 //            }
 //        });
+        String cookie = RepostApplication.getInstance().getAppSettings().getInstagramCookie();
         RepostApplication.getInstance().getHttpClient()
-                .newCall(Consts.requestreformer(Consts.requestreformer(
-                        new Request.Builder().url(url).build()))).enqueue(new okhttp3.Callback() {
+                .newCall(Consts.requestreformer(
+                        new Request.Builder().url(url).build(),cookie)).enqueue(new okhttp3.Callback() {
             @Override
             public void onFailure(okhttp3.Call call, IOException e) {
 
@@ -281,7 +284,7 @@ public class MediaLoader {
 
 
                                 listMedia.add(media);
-                                Log.e("Load Popular", "" + media.toJson());
+                                Log.e("loadPopular", "" + media.toJson());
                                 i++;
                             }
                             Handler mainHandler = new Handler(Looper.getMainLooper());

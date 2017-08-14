@@ -33,10 +33,10 @@ import com.sns.repost.models.User;
 import com.sns.repost.utils.AppSettings;
 import com.sns.repost.utils.Consts;
 import com.sns.repost.utils.StringUtils;
+import com.sns.repost.utils.Util;
 import com.sns.repost.utils.Utils;
 
 import net.londatiga.android.instagram.Instagram;
-import net.londatiga.android.instagram.InstagramRequest;
 import net.londatiga.android.instagram.InstagramSession;
 import net.londatiga.android.instagram.InstagramUser;
 
@@ -122,6 +122,11 @@ public class MainActivity extends BaseActivity {
         public void onCancel() {
             Utils.showToast(MainActivity.this, "May be later");
         }
+
+        @Override
+        public void onCookie(String cookie) {
+
+        }
     }
 
     private void loadData() {
@@ -160,7 +165,7 @@ public class MainActivity extends BaseActivity {
             if (Build.VERSION.SDK_INT > 22) {
                 verifyStoragePermissions(this);
             }
-            if (userLoader.getUser() == null) {
+            //if (userLoader.getUser() == null) {
                 userLoader.loadSelf(new SimpleCallback() {
                     @Override
                     public void success(Object... params) {
@@ -175,7 +180,7 @@ public class MainActivity extends BaseActivity {
 
                     }
                 });
-            }
+           // }
             refreshMediaList();
         }
     }
@@ -203,35 +208,35 @@ public class MainActivity extends BaseActivity {
     private void refreshMediaList() {
 
         rcvMedia.setRefreshing(true);
-        mediaLoader.loadLiked(new SuccessfullCallback() {
-            @Override
-            public void success(Object... params) {
-                mediaList = (ArrayList<Media>) params[0];
-                mediaAdapter = new MediaAdapter(mediaList);
-                mediaAdapter.setmAct(MainActivity.this);
-                rcvMedia.setAdapter(mediaAdapter);
-                rcvMedia.setRefreshing(false);
-            }
-        });
-        Utils.currentActivity = MainActivity.this;
-//        mediaLoader.loadPopular(new SuccessfullCallback() {
+//        mediaLoader.loadLiked(new SuccessfullCallback() {
 //            @Override
 //            public void success(Object... params) {
 //                mediaList = (ArrayList<Media>) params[0];
-//                Handler mainHandler = new Handler(Looper.getMainLooper());
-//                mainHandler.post(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        // code to interact with UI
-//                        mediaAdapter = new MediaAdapter(mediaList);
-//                        mediaAdapter.setmAct(MainActivity.this);
-//                        rcvMedia.setAdapter(mediaAdapter);
-//                        rcvMedia.setRefreshing(false);
-//                    }
-//                });
-//
+//                mediaAdapter = new MediaAdapter(mediaList);
+//                mediaAdapter.setmAct(MainActivity.this);
+//                rcvMedia.setAdapter(mediaAdapter);
+//                rcvMedia.setRefreshing(false);
 //            }
 //        });
+        Utils.currentActivity = MainActivity.this;
+        mediaLoader.loadPopular(new SuccessfullCallback() {
+            @Override
+            public void success(Object... params) {
+                mediaList = (ArrayList<Media>) params[0];
+                Handler mainHandler = new Handler(Looper.getMainLooper());
+                mainHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        // code to interact with UI
+                        mediaAdapter = new MediaAdapter(mediaList);
+                        mediaAdapter.setmAct(MainActivity.this);
+                        rcvMedia.setAdapter(mediaAdapter);
+                        rcvMedia.setRefreshing(false);
+                    }
+                });
+
+            }
+        });
     }
 
     private void setupLoadMoreMediaList() {
