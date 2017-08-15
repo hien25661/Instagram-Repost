@@ -229,21 +229,22 @@ public class MainActivity extends BaseActivity {
 //            }
 //        });
         Utils.currentActivity = MainActivity.this;
-        mediaLoader.loadPopular(new SuccessfullCallback() {
+        mediaLoader.loadPopularNew(new SuccessfullCallback() {
             @Override
             public void success(Object... params) {
                 mediaList = (ArrayList<Media>) params[0];
-                Handler mainHandler = new Handler(Looper.getMainLooper());
+                mediaAdapter = new MediaAdapter(mediaList);
+                mediaAdapter.setmAct(MainActivity.this);
+                rcvMedia.setAdapter(mediaAdapter);
+                rcvMedia.setRefreshing(false);
+               /* Handler mainHandler = new Handler(Looper.getMainLooper());
                 mainHandler.post(new Runnable() {
                     @Override
                     public void run() {
                         // code to interact with UI
-                        mediaAdapter = new MediaAdapter(mediaList);
-                        mediaAdapter.setmAct(MainActivity.this);
-                        rcvMedia.setAdapter(mediaAdapter);
-                        rcvMedia.setRefreshing(false);
+
                     }
-                });
+                });*/
 
             }
         });
@@ -276,28 +277,29 @@ public class MainActivity extends BaseActivity {
 //                    rcvMedia.disableLoadmore();
 //                }
                 if (StringUtils.isNotEmpty(mediaLoader.getmMinMediaId())) {
-                    mediaLoader.loadPopular(new SuccessfullCallback() {
+                    mediaLoader.loadPopularNew(new SuccessfullCallback() {
                         @Override
                         public void success(Object... params) {
                             final List<Media> mListMore = (List<Media>) params[0];
-                            Handler mainHandler = new Handler(Looper.getMainLooper());
+                            if (mListMore != null && mListMore.size() > 0) {
+                                if (mListMore != null && mListMore.size() > 0) {
+                                    for (Media media : mListMore) {
+                                        if (mediaAdapter.getMediaList() != null && !checkMediaContain(mediaAdapter.getMediaList(), media)) {
+                                            mediaAdapter.insert(media, mediaAdapter.getAdapterItemCount());
+                                        }
+                                    }
+                                } else {
+                                }
+                            } else {
+                            }
+                            /*Handler mainHandler = new Handler(Looper.getMainLooper());
                             mainHandler.post(new Runnable() {
                                 @Override
                                 public void run() {
                                     // code to interact with UI
-                                    if (mListMore != null && mListMore.size() > 0) {
-                                        if (mListMore != null && mListMore.size() > 0) {
-                                            for (Media media : mListMore) {
-                                                if (mediaAdapter.getMediaList() != null && !checkMediaContain(mediaAdapter.getMediaList(), media)) {
-                                                    mediaAdapter.insert(media, mediaAdapter.getAdapterItemCount());
-                                                }
-                                            }
-                                        } else {
-                                        }
-                                    } else {
-                                    }
+
                                 }
-                            });
+                            });*/
 
                         }
                     });

@@ -13,12 +13,15 @@ import com.sns.repost.services.response.LoadSelfResponse;
 import com.sns.repost.services.response.TagsResponse;
 import com.sns.repost.services.response.UsersResponse;
 
+import java.util.Map;
+
 import retrofit2.Call;
 import retrofit2.http.DELETE;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
+import retrofit2.http.HeaderMap;
 import retrofit2.http.Headers;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
@@ -108,7 +111,7 @@ public interface InstagramApi {
     //popular
 
     @GET
-    Call<String> loadPopular(@Header("User-Agent") String header,@Url String url);
+    Call<String> loadPopular(@HeaderMap Map<String, String> headers, @Url String url);
 
 
 }
