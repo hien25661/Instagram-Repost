@@ -73,9 +73,10 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/viewBottom"
         android:layout_below="@id/tabanim_appbar"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:id="@+id/linerInfo"
+        android:layout_above="@+id/adView">
         <RelativeLayout
             android:id="@+id/viewHeader"
             android:layout_width="match_parent"
@@ -130,7 +131,13 @@
                 android:visibility="gone" />
         </FrameLayout>
     </LinearLayout>
-
+    <com.google.android.gms.ads.AdView
+        android:id="@+id/adView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        ads:adSize="SMART_BANNER"
+        ads:adUnitId="@string/ads_id_banner"
+        android:layout_above="@+id/viewBottom"></com.google.android.gms.ads.AdView>
     <LinearLayout
         android:id="@+id/viewBottom"
         android:layout_width="match_parent"

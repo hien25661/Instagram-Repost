@@ -17,6 +17,8 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.bumptech.glide.request.target.SimpleTarget;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 import com.sns.repost.BaseActivity;
 import com.sns.repost.R;
 import com.sns.repost.api.SampleSaver;
@@ -58,13 +60,21 @@ public class RepostActivity extends BaseActivity {
     String mSavedPath;
     Bitmap mBitmapResult, mBitmap;
 
+    @Bind(R.id.adView)
+    AdView adView;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_repost);
         ButterKnife.bind(this);
         media = Utils.getMediaBundle(getIntent().getStringExtra(Consts.PARAM_MEDIA));
+        loadAd();
         loadData();
+    }
+
+    private void loadAd() {
+        AdRequest adRequest = new AdRequest.Builder().build();
+        adView.loadAd(adRequest);
     }
 
     private void loadData() {
