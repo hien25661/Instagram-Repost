@@ -18,6 +18,7 @@ import android.os.Build.VERSION;
 import android.os.Environment;
 import android.provider.MediaStore.Images.Media;
 import android.provider.Settings.Secure;
+import android.support.v4.content.FileProvider;
 import android.text.ClipboardManager;
 import android.text.Spannable;
 import android.text.TextPaint;
@@ -336,7 +337,11 @@ public class Util {
                 type = "image/*";
             }
             sharingIntent.setType(type);
-            sharingIntent.putExtra("android.intent.extra.STREAM", Uri.fromFile(new File(mSavedPath)));
+            Uri photoURI = null;
+            photoURI = FileProvider.getUriForFile(act,
+                    act.getString(R.string.file_provider_authority),
+                    new File(mSavedPath));
+            sharingIntent.putExtra("android.intent.extra.STREAM", photoURI);
             sharingIntent.putExtra("android.intent.extra.TEXT", caption);
             sharingIntent.setPackage("com.instagram.android");
             act.startActivity(sharingIntent);
@@ -346,7 +351,11 @@ public class Util {
     public static void startShareIntent(Activity act, String mSavedPath, String caption) {
         Intent sharingIntent = new Intent("android.intent.action.SEND");
         sharingIntent.setType("video/*");
-        sharingIntent.putExtra("android.intent.extra.STREAM", Uri.fromFile(new File(mSavedPath)));
+        Uri photoURI = null;
+        photoURI = FileProvider.getUriForFile(act,
+                act.getString(R.string.file_provider_authority),
+                new File(mSavedPath));
+        sharingIntent.putExtra("android.intent.extra.STREAM", photoURI);
         sharingIntent.putExtra("android.intent.extra.TEXT", caption);
         act.startActivity(Intent.createChooser(sharingIntent, act.getString(R.string.share_title)));
     }

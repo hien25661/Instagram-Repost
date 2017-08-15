@@ -7,6 +7,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.content.FileProvider;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -184,7 +185,11 @@ public class RepostActivity extends BaseActivity {
         if (Utils.checkInstagramInstalled(this)) {
             Intent sharingIntent = new Intent("android.intent.action.SEND");
             sharingIntent.setType("image/*");
-            sharingIntent.putExtra("android.intent.extra.STREAM", Uri.fromFile(new File(this.mSavedPath)));
+            Uri photoURI = null;
+            photoURI = FileProvider.getUriForFile(RepostActivity.this,
+                    getString(R.string.file_provider_authority),
+                    new File(this.mSavedPath));
+            sharingIntent.putExtra("android.intent.extra.STREAM", photoURI);
             sharingIntent.putExtra("android.intent.extra.TEXT", getCaption());
             sharingIntent.setPackage("com.instagram.android");
             startActivity(sharingIntent);
@@ -197,7 +202,11 @@ public class RepostActivity extends BaseActivity {
         Intent sharingIntent = new Intent("android.intent.action.SEND");
         sharingIntent.addFlags(524288);
         sharingIntent.setType("image/jpeg");
-        sharingIntent.putExtra("android.intent.extra.STREAM", Uri.fromFile(new File(this.mSavedPath)));
+        Uri photoURI = null;
+        photoURI = FileProvider.getUriForFile(this,
+                        getString(R.string.file_provider_authority),
+                new File(this.mSavedPath));
+        sharingIntent.putExtra("android.intent.extra.STREAM", photoURI);
         sharingIntent.putExtra("android.intent.extra.TEXT", this.media.getCaption().getText());
         startActivity(Intent.createChooser(sharingIntent, getString(R.string.share_title)));
     }

@@ -18,4 +18,5 @@
 
     <string name="ads_id_banner">ca-app-pub-3940256099942544/6300978111</string>
     <string name="ads_id_interstis">ca-app-pub-3940256099942544/1033173712</string>
+    <string name="file_provider_authority" translatable="false">com.sns.repost</string>
 </resources>
