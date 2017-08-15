@@ -15,4 +15,7 @@
     <string name="please_try_again">Please try again !</string>
     <string name="download_started_background">Download started in background</string>
     <string name="please_note">* Repost for Instagram is a complementary application for Instagram and is not by any way part of Instagram application, nor is it developed or maintained by Instagram team</string>
+
+    <string name="ads_id_banner">ca-app-pub-3940256099942544/6300978111</string>
+    <string name="ads_id_interstis">ca-app-pub-3940256099942544/1033173712</string>
 </resources>

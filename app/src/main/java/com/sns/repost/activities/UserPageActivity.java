@@ -12,6 +12,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 import com.marshalchen.ultimaterecyclerview.UltimateRecyclerView;
 import com.sns.repost.BaseActivity;
 import com.sns.repost.R;
@@ -61,6 +63,9 @@ public class UserPageActivity extends BaseActivity {
     private FollowLoader followLoader;
     private ArrayList<Media> mediaList = new java.util.ArrayList<>();
 
+    @Bind(R.id.adView)
+    AdView adView;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,8 +74,14 @@ public class UserPageActivity extends BaseActivity {
         userLoader = UserLoader.getInstance();
         user_id = getIntent().getStringExtra(Consts.USER_ID);
         followLoader = FollowLoader.getInstance();
+        loadAd();
         initView();
         loadData();
+    }
+
+    private void loadAd() {
+        AdRequest adRequest = new AdRequest.Builder().build();
+        adView.loadAd(adRequest);
     }
 
     private void initView() {
@@ -97,12 +108,15 @@ public class UserPageActivity extends BaseActivity {
     }
 
     private void bindDataUser() {
-        tvNumbMedia.setText(user.getCounts().getMedia() + " MEDIA");
-        tvNumbFollower.setText(user.getCounts().getFollowedBy() + " FOLLOWERS");
-        tvNumbFollow.setText(user.getCounts().getFollows() + " FOLLOWS");
-        Utils.showImage(UserPageActivity.this, user.getProfilePicture(), imvAvatar);
-        tvUserName.setText(user.getUsername());
-        tvTitle.setText(user.getUsername());
+        if (user != null) {
+            tvNumbMedia.setText(user.getCounts().getMedia() + " MEDIA");
+            tvNumbFollower.setText(user.getCounts().getFollowedBy() + " FOLLOWERS");
+            tvNumbFollow.setText(user.getCounts().getFollows() + " FOLLOWS");
+
+            Utils.showImage(UserPageActivity.this, user.getProfilePicture(), imvAvatar);
+            tvUserName.setText(user.getUsername());
+            tvTitle.setText(user.getUsername());
+        }
     }
 
     private void loadUserMedia() {
@@ -171,7 +185,7 @@ public class UserPageActivity extends BaseActivity {
                         // continue with delete
                         dialog.dismiss();
                         RepostApplication.getInstance().getAppSettings().setInstagramAccessToken("");
-                        Intent t = new Intent(UserPageActivity.this,MainActivity.class);
+                        Intent t = new Intent(UserPageActivity.this, MainActivity.class);
                         t.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         startActivity(t);
                         finish();

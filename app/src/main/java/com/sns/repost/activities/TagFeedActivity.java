@@ -6,6 +6,8 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.widget.TextView;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 import com.marshalchen.ultimaterecyclerview.UltimateRecyclerView;
 import com.sns.repost.BaseActivity;
 import com.sns.repost.R;
@@ -40,6 +42,8 @@ public class TagFeedActivity extends BaseActivity {
     private String tagName;
     private ArrayList<Media> mediaList = new ArrayList<>();
 
+    @Bind(R.id.adView)
+    AdView adView;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,9 +53,13 @@ public class TagFeedActivity extends BaseActivity {
         tagsLoader = TagsLoader.getInstance();
         tagName = getIntent().getStringExtra(Consts.PARAM_TAG_NAME);
         tvTitle.setText("#"+tagName);
+        loadAd();
         initView();
     }
-
+    private void loadAd() {
+        AdRequest adRequest = new AdRequest.Builder().build();
+        adView.loadAd(adRequest);
+    }
     private void initView() {
         rcvMedia.setHasFixedSize(false);
         rcvMedia.setLayoutManager(new GridLayoutManager(this, 2));

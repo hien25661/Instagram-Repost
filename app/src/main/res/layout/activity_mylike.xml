@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:ads="http://schemas.android.com/apk/res-auto"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.sns.repost.activities.MainActivity"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    tools:context="com.sns.repost.activities.MainActivity">
+
     <android.support.design.widget.AppBarLayout
         android:id="@+id/tabanim_appbar"
         android:layout_width="match_parent"
@@ -16,6 +18,7 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="50dp"
+            android:background="@color/color_toolbar"
             android:contentInsetEnd="0dp"
             android:contentInsetLeft="0dp"
             android:contentInsetRight="0dp"
@@ -25,7 +28,6 @@
             app:contentInsetRight="0dp"
             app:contentInsetStart="0dp"
             app:layout_scrollFlags="scroll|enterAlways"
-            android:background="@color/color_toolbar"
             app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
 
             <RelativeLayout
@@ -34,35 +36,34 @@
                 android:gravity="center_vertical"
                 android:paddingLeft="10dp"
                 android:paddingRight="10dp">
+
                 <ImageView
                     android:id="@+id/imvBack"
                     android:layout_width="25dp"
                     android:layout_height="wrap_content"
-                    android:src="@mipmap/ic_back"
                     android:layout_centerVertical="true"
-                    />
+                    android:src="@mipmap/ic_back" />
 
                 <LinearLayout
-                    android:layout_toRightOf="@id/imvBack"
                     android:id="@+id/liner2"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_marginLeft="10dp"
+                    android:layout_toRightOf="@id/imvBack"
                     android:gravity="center_vertical"
-                    android:orientation="vertical"
-                    >
+                    android:orientation="vertical">
+
                     <TextView
                         android:id="@+id/tvTitle"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
+                        android:ellipsize="end"
+                        android:gravity="center"
+                        android:lines="1"
                         android:text="My Likes"
                         android:textColor="@android:color/black"
                         android:textSize="20sp"
-                        android:textStyle="bold"
-                        android:gravity="center"
-                        android:lines="1"
-                        android:ellipsize="end"
-                        />
+                        android:textStyle="bold" />
                 </LinearLayout>
             </RelativeLayout>
         </android.support.v7.widget.Toolbar>
@@ -70,10 +71,20 @@
     </android.support.design.widget.AppBarLayout>
 
     <com.marshalchen.ultimaterecyclerview.UltimateRecyclerView
+        android:id="@+id/rcv_feed"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/rcv_feed"
+        android:layout_above="@+id/adView"
+        android:layout_below="@id/tabanim_appbar"
         app:recyclerviewEmptyView="@layout/empty_view"
-        app:recyclerviewScrollbars="vertical"/>
+        app:recyclerviewScrollbars="vertical" />
 
-</LinearLayout>
+    <com.google.android.gms.ads.AdView
+        android:id="@+id/adView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        ads:adSize="SMART_BANNER"
+        ads:adUnitId="@string/ads_id_banner"></com.google.android.gms.ads.AdView>
+
+</RelativeLayout>

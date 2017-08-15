@@ -6,6 +6,8 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 import com.marshalchen.ultimaterecyclerview.UltimateRecyclerView;
 import com.sns.repost.BaseActivity;
 import com.sns.repost.R;
@@ -35,6 +37,8 @@ public class MyLikeActivity extends BaseActivity {
     private MediaAdapter mediaAdapter;
     private MediaLoader mediaLoader;
     private ArrayList<Media> mediaList = new ArrayList<>();
+    @Bind(R.id.adView)
+    AdView adView;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -42,8 +46,13 @@ public class MyLikeActivity extends BaseActivity {
         setContentView(R.layout.activity_mylike);
         ButterKnife.bind(this);
         mediaLoader = MediaLoader.getInstance();
+        loadAd();
         initView();
 
+    }
+    private void loadAd() {
+        AdRequest adRequest = new AdRequest.Builder().build();
+        adView.loadAd(adRequest);
     }
 
     private void initView() {

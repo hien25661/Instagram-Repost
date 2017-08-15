@@ -20,6 +20,8 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 import com.sns.repost.BaseActivity;
 import com.sns.repost.R;
 import com.sns.repost.adapters.MediaAdapter;
@@ -86,7 +88,8 @@ public class DetailMediaActivity extends BaseActivity {
 
     private Media media;
     private MediaLoader mediaLoader;
-
+    @Bind(R.id.adView)
+    AdView adView;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -94,10 +97,14 @@ public class DetailMediaActivity extends BaseActivity {
         ButterKnife.bind(this);
         mediaLoader = MediaLoader.getInstance();
         media = Utils.getMediaBundle(getIntent().getStringExtra(Consts.PARAM_MEDIA));
+        loadAd();
         initView();
         loadData();
     }
-
+    private void loadAd() {
+        AdRequest adRequest = new AdRequest.Builder().build();
+        adView.loadAd(adRequest);
+    }
     private void initView() {
         viewSpace.setVisibility(View.INVISIBLE);
     }
@@ -354,5 +361,12 @@ public class DetailMediaActivity extends BaseActivity {
                     NumberFormat.getInstance().format(media.getLikes().getCount())));
             imvLike.setImageResource(R.mipmap.ic_like);
         }
+    }
+
+    @OnClick(R.id.rlt_media)
+    public void showPreviewMedia(){
+        DialogPreview dialogPreview = new DialogPreview(this);
+        dialogPreview.setMedia(media);
+        dialogPreview.show();
     }
 }

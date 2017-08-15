@@ -16,6 +16,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 import com.marshalchen.ultimaterecyclerview.UltimateRecyclerView;
 import com.sns.repost.BaseActivity;
 import com.sns.repost.BuildConfig;
@@ -66,6 +68,8 @@ public class MainActivity extends BaseActivity {
     private InstagramSession mInstagramSession;
     private static String[] PERMISSIONS_STORAGE = new String[]{"android.permission.READ_EXTERNAL_STORAGE", "android.permission.WRITE_EXTERNAL_STORAGE"};
 
+    @Bind(R.id.adView)
+    AdView adView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -74,8 +78,14 @@ public class MainActivity extends BaseActivity {
         userLoader = UserLoader.getInstance();
         mediaLoader = MediaLoader.getInstance();
         appSettings = RepostApplication.getInstance().getAppSettings();
+        loadAd();
         initView();
         loadData();
+    }
+
+    private void loadAd() {
+        AdRequest adRequest = new AdRequest.Builder().build();
+        adView.loadAd(adRequest);
     }
 
     public static void verifyStoragePermissions(Activity activity) {

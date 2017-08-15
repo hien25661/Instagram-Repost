@@ -8,6 +8,8 @@ import android.support.v4.view.ViewPager;
 import android.text.Editable;
 import android.text.TextWatcher;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 import com.optimus.edittextfield.EditTextField;
 import com.sns.repost.BaseActivity;
 import com.sns.repost.R;
@@ -40,13 +42,20 @@ public class SearchActivity extends BaseActivity {
     ArrayList<Fragment> listFragment = new ArrayList<>();
     ArrayList<String> listFragmentTitle = new ArrayList<>();
     private String keyWord = "";
+    @Bind(R.id.adView)
+    AdView adView;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
         ButterKnife.bind(this);
+        loadAd();
         initView();
         loadDataFragment();
+    }
+    private void loadAd() {
+        AdRequest adRequest = new AdRequest.Builder().build();
+        adView.loadAd(adRequest);
     }
 
     private void initView() {
