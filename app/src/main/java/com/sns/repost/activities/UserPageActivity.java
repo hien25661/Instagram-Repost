@@ -22,6 +22,7 @@ import com.sns.repost.adapters.MediaAdapter;
 import com.sns.repost.helpers.callback.SimpleCallback;
 import com.sns.repost.helpers.callback.SuccessfullCallback;
 import com.sns.repost.loader.FollowLoader;
+import com.sns.repost.loader.MediaLoader;
 import com.sns.repost.loader.UserLoader;
 import com.sns.repost.models.Media;
 import com.sns.repost.models.User;
@@ -185,6 +186,7 @@ public class UserPageActivity extends BaseActivity {
                         // continue with delete
                         dialog.dismiss();
                         RepostApplication.getInstance().getAppSettings().setInstagramAccessToken("");
+                        MediaLoader.getInstance().setmMinMediaId("");
                         Intent t = new Intent(UserPageActivity.this, MainActivity.class);
                         t.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         startActivity(t);
