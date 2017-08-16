@@ -211,25 +211,39 @@ public class MainActivity extends BaseActivity {
     SwipeRefreshLayout.OnRefreshListener listener = new SwipeRefreshLayout.OnRefreshListener() {
         @Override
         public void onRefresh() {
-            refreshMediaList();
+            refreshMediaListRefresh();
         }
     };
 
     private void refreshMediaList() {
 
         rcvMedia.setRefreshing(true);
-//        mediaLoader.loadLiked(new SuccessfullCallback() {
-//            @Override
-//            public void success(Object... params) {
-//                mediaList = (ArrayList<Media>) params[0];
-//                mediaAdapter = new MediaAdapter(mediaList);
-//                mediaAdapter.setmAct(MainActivity.this);
-//                rcvMedia.setAdapter(mediaAdapter);
-//                rcvMedia.setRefreshing(false);
-//            }
-//        });
         Utils.currentActivity = MainActivity.this;
         mediaLoader.loadPopularNew(new SuccessfullCallback() {
+            @Override
+            public void success(Object... params) {
+                mediaList = (ArrayList<Media>) params[0];
+                mediaAdapter = new MediaAdapter(mediaList);
+                mediaAdapter.setmAct(MainActivity.this);
+                rcvMedia.setAdapter(mediaAdapter);
+                rcvMedia.setRefreshing(false);
+               /* Handler mainHandler = new Handler(Looper.getMainLooper());
+                mainHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        // code to interact with UI
+
+                    }
+                });*/
+
+            }
+        });
+    }
+    private void refreshMediaListRefresh() {
+
+        rcvMedia.setRefreshing(true);
+        Utils.currentActivity = MainActivity.this;
+        mediaLoader.loadPopularNewRefresh(new SuccessfullCallback() {
             @Override
             public void success(Object... params) {
                 mediaList = (ArrayList<Media>) params[0];

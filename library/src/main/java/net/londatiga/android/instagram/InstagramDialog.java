@@ -145,6 +145,7 @@ public class InstagramDialog extends Dialog {
 		webSettings.setSaveFormData(false);
 		
 		mContent.addView(mWebView);
+		clearCache();
 	}
 
 	public void clearCache() {
@@ -152,33 +153,37 @@ public class InstagramDialog extends Dialog {
 		mWebView.clearHistory();
 		mWebView.clearFormData();
 	}
-	
+
 	@Override
 	public void onBackPressed() {
 		super.onBackPressed();
 		mListener.onCancel();
-		
+
 	}
 	private class InstagramWebViewClient extends WebViewClient {
 
 		@Override
 		public boolean shouldOverrideUrlLoading(WebView view, String url) {
 			Log.d(TAG, "Redirecting URL " + url);
-	        	
+
 			if (url.startsWith(mRedirectUri)) {
 				if (url.contains("code")) {
 					String myCookies = CookieManager.getInstance().getCookie("https://www.instagram.com");
 					Log.e("loadPopular",""+myCookies);
 					mListener.onCookie(myCookies);
 					String temp[] = url.split("=");
-					
+
 					mListener.onSuccess(temp[1]);
 				} else if (url.contains("error")) {
 					String temp[] = url.split("=");
-					
+
 					mListener.onError(temp[temp.length-1]);
 				}
 	        	InstagramDialog.this.dismiss();
+				clearCache();
+				view.clearCache(true);
+				view.clearHistory();
+				view.clearFormData();
 	        		
 	        	return true;
 			}

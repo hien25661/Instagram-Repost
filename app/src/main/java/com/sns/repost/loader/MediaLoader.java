@@ -108,39 +108,6 @@ public class MediaLoader {
         if (this.mMinMediaId != "") {
             url = url + "?max_id=" + this.mMinMediaId;
         }
-//        InstagramService.creatTestServiceApi().loadPopular(Utils.userAgent,url).enqueue(new Callback<String>() {
-//            @Override
-//            public void onResponse(Call<String> call, Response<String> response) {
-//                Log.e("loadPopular", ""+response.body());
-//            }
-//
-//            @Override
-//            public void onFailure(Call<String> call, Throwable t) {
-//                Log.e("loadPopular", t.getMessage());
-//            }
-//        });
-//        ClearableCookieJar cookieJar = new PersistentCookieJar(new SetCookieCache(),
-//                new SharedPrefsCookiePersistor(RepostApplication.getInstance()));
-//        OkHttpClient client = new OkHttpClient.Builder()
-//                .cookieJar(cookieJar)
-//                .build();
-//
-//        Request request = new Request.Builder()
-//                .url(url)
-//                .get().addHeader("User-Agent",Utils.userAgent)
-//                .build();
-//        client.newCall(request).enqueue(new okhttp3.Callback() {
-//            @Override
-//            public void onFailure(okhttp3.Call call, IOException e) {
-//
-//            }
-//
-//            @Override
-//            public void onResponse(okhttp3.Call call, okhttp3.Response responses) throws IOException {
-//                String response = responses.body().string();
-//                Log.e("loadPopular", ""+response);
-//            }
-//        });
         String cookie = RepostApplication.getInstance().getAppSettings().getInstagramCookie();
         RepostApplication.getInstance().getHttpClient()
                 .newCall(Consts.requestreformer(
@@ -492,19 +459,28 @@ public class MediaLoader {
             }
         });
 
-        /*RepostApplication.getInstance().getHttpClient()
-                .newCall(Consts.requestreformer(
-                        new Request.Builder().url(url).build(),cookie)).enqueue(new okhttp3.Callback() {
-            @Override
-            public void onFailure(okhttp3.Call call, IOException e) {
+    }
 
-            }
+    public void loadPopularNewRefresh(final SuccessfullCallback callback) {
+        String url = "https://i.instagram.com/api/v1/feed/timeline/";
+        String cookie = RepostApplication.getInstance().getAppSettings().getInstagramCookie();
+        Map<String, String> map = new HashMap<>();
+        map.put("User-Agent", "Instagram 8.0.0 Android (18/4.3; 320dpi; 720x1280; Xiaomi; HM 1SW; armani; qcom; en_US)");
+        map.put("Connection", "close");
+        map.put("Accept-Language", "en-US");
+        map.put("Content-Type", "application/x-www-form-urlencoded;charset=UTF-8");
+        map.put("Accept", "*/*");
+        map.put("Cookie2", "$Version=1");
+        map.put("cookie",cookie);
 
+
+
+        InstagramService.creatTestServiceApi().loadPopular(map,url).enqueue(new Callback<String>() {
             @Override
-            public void onResponse(okhttp3.Call call, okhttp3.Response responses) throws IOException {
+            public void onResponse(Call<String> call, Response<String> responses) {
                 final ArrayList<Media> listMedia = new ArrayList<Media>();
                 try {
-                    String response = responses.body().string();
+                    String response = responses.body().toString();
                     Utils.writeToFile("", response);
                     if (!response.equals("")) {
                         JSONObject jsonObj = (JSONObject) new JSONTokener(response).nextValue();
@@ -640,22 +616,28 @@ public class MediaLoader {
                                 Log.e("loadPopular", "" + media.toJson());
                                 i++;
                             }
-                            Handler mainHandler = new Handler(Looper.getMainLooper());
+                            /*Handler mainHandler = new Handler(Looper.getMainLooper());
                             mainHandler.post(new Runnable() {
                                 @Override
                                 public void run() {
                                     // code to interact with UI
                                     callback.success(listMedia);
                                 }
-                            });
+                            });*/
                         }
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+                callback.success(listMedia);
 
             }
-        });*/
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+
+            }
+        });
 
     }
 

@@ -58,11 +58,11 @@ public class InstagramService {
 
 
     private static Retrofit getRetrofitInstagramTokenTest() {
-        ClearableCookieJar cookieJar = new PersistentCookieJar(new SetCookieCache(),
-                new SharedPrefsCookiePersistor(RepostApplication.getInstance()));
-        OkHttpClient okHttpClient = new OkHttpClient.Builder()
-                .cookieJar(cookieJar)
-                .build();
+//        ClearableCookieJar cookieJar = new PersistentCookieJar(new SetCookieCache(),
+//                new SharedPrefsCookiePersistor(RepostApplication.getInstance()));
+//        OkHttpClient okHttpClient = new OkHttpClient.Builder()
+//                .cookieJar(cookieJar)
+//                .build();
 //        return new Retrofit.Builder()
 //                .baseUrl("https://api.instagram.com/")
 //                .addConverterFactory(ScalarsConverterFactory.create())
@@ -70,7 +70,6 @@ public class InstagramService {
            return new Retrofit.Builder()
                     .baseUrl(API_BASE_URL)
                     .addConverterFactory(ScalarsConverterFactory.create())
-                    .client(okHttpClient)
                     .build();
         }
 
