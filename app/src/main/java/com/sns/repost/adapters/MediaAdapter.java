@@ -37,10 +37,15 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.InterstitialAd;
 import com.marshalchen.ultimaterecyclerview.UltimateRecyclerviewViewHolder;
 import com.marshalchen.ultimaterecyclerview.UltimateViewAdapter;
 import com.sns.repost.R;
 import com.sns.repost.activities.DetailMediaActivity;
+import com.sns.repost.activities.MainActivity;
+import com.sns.repost.activities.SplashActivity;
 import com.sns.repost.activities.TagFeedActivity;
 import com.sns.repost.activities.UserPageActivity;
 import com.sns.repost.dialog.DialogPreview;
@@ -150,6 +155,12 @@ public class MediaAdapter extends UltimateViewAdapter {
         this.mAct = mAct;
     }
 
+
+    InterstitialAd interstitial;
+    AdRequest adRequest;
+    int count = 0;
+
+
     @Override
     public RecyclerView.ViewHolder newFooterHolder(View view) {
         return new UltimateRecyclerviewViewHolder<>(view);
@@ -168,6 +179,13 @@ public class MediaAdapter extends UltimateViewAdapter {
         mContext = v.getContext();
         userLoader = UserLoader.getInstance();
         mediaLoader = MediaLoader.getInstance();
+
+        adRequest = new AdRequest.Builder().build();
+
+        interstitial = new InterstitialAd(mContext);
+        // Insert the Ad Unit ID
+        interstitial.setAdUnitId(mContext.getResources().getString(R.string.ads_id_interstis));
+        interstitial.loadAd(adRequest);
         return vh;
     }
 
@@ -341,7 +359,18 @@ public class MediaAdapter extends UltimateViewAdapter {
             ((ViewHolder) holder).btnRepost.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Utils.openRepostScreen(mContext, media);
+                    if (interstitial.isLoaded()) {
+                        interstitial.show();
+                    } else {
+                        Utils.openRepostScreen(mContext, media);
+                    }
+                    interstitial.setAdListener(new AdListener() {
+                        // Listen for when user closes ad
+                        public void onAdClosed() {
+                            Utils.openRepostScreen(mContext, media);
+                        }
+                    });
+                    count++;
                 }
             });
         }

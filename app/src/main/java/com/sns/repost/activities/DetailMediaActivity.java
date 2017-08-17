@@ -20,8 +20,10 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.InterstitialAd;
 import com.sns.repost.BaseActivity;
 import com.sns.repost.R;
 import com.sns.repost.adapters.MediaAdapter;
@@ -90,6 +92,9 @@ public class DetailMediaActivity extends BaseActivity {
     private MediaLoader mediaLoader;
     @Bind(R.id.adView)
     AdView adView;
+    InterstitialAd interstitial;
+    int count = 0;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -101,10 +106,18 @@ public class DetailMediaActivity extends BaseActivity {
         initView();
         loadData();
     }
+
     private void loadAd() {
         AdRequest adRequest = new AdRequest.Builder().build();
         adView.loadAd(adRequest);
+
+
+        interstitial = new InterstitialAd(this);
+        // Insert the Ad Unit ID
+        interstitial.setAdUnitId(getResources().getString(R.string.ads_id_interstis));
+        interstitial.loadAd(adRequest);
     }
+
     private void initView() {
         viewSpace.setVisibility(View.INVISIBLE);
     }
@@ -129,9 +142,9 @@ public class DetailMediaActivity extends BaseActivity {
         tvCaption.setMovementMethod(LinkMovementMethod.getInstance());
         tvCaption.setGravity(Gravity.TOP | Gravity.LEFT);
 
-        if(media.isLiked){
+        if (media.isLiked) {
             imvLike.setImageResource(R.mipmap.liked);
-        }else {
+        } else {
             imvLike.setImageResource(R.mipmap.ic_like);
         }
 
@@ -317,15 +330,29 @@ public class DetailMediaActivity extends BaseActivity {
 
     @OnClick(R.id.imvBrowseInstagram)
     public void linkInstagram() {
-        Utils.showPhotoInInstagram(this,media.getLink());
+        Utils.showPhotoInInstagram(this, media.getLink());
     }
+
     @OnClick(R.id.btnRepost)
     public void repost() {
-        Utils.openRepostScreen(this, media);
+        if (interstitial.isLoaded()) {
+            interstitial.show();
+        } else {
+            Utils.openRepostScreen(this, media);
+        }
+        interstitial.setAdListener(new AdListener() {
+            // Listen for when user closes ad
+            public void onAdClosed() {
+                Utils.openRepostScreen(DetailMediaActivity.this, media);
+            }
+        });
+        count++;
+
     }
+
     @OnClick(R.id.imvLike)
-    public void actionLike(){
-        if(!media.isLiked){
+    public void actionLike() {
+        if (!media.isLiked) {
             media.isLiked = true;
             media.getLikes().setCount(media.getLikes().getCount() + 1);
             mediaLoader.likeMedia(media.getId(), new SimpleCallback() {
@@ -343,7 +370,7 @@ public class DetailMediaActivity extends BaseActivity {
                     NumberFormat.getInstance().format(media.getLikes().getCount())));
             imvLike.setImageResource(R.mipmap.liked);
 
-        }else {
+        } else {
             media.isLiked = false;
             media.getLikes().setCount(media.getLikes().getCount() - 1);
             mediaLoader.removeLikeMedia(media.getId(), new SimpleCallback() {
@@ -364,7 +391,7 @@ public class DetailMediaActivity extends BaseActivity {
     }
 
     @OnClick(R.id.rlt_media)
-    public void showPreviewMedia(){
+    public void showPreviewMedia() {
         DialogPreview dialogPreview = new DialogPreview(this);
         dialogPreview.setMedia(media);
         dialogPreview.show();
